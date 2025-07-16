@@ -16,3 +16,7 @@ class Chat(db.Model, SerializerMixin):
     sender = db.relationship('User', back_populates='messages')
 
     serialize_rules = ('-class_.messages', '-sender.messages',)
+
+
+    def __repr__(self):
+        return f"<Chat id={self.id} user_id={self.user_id} class_id={self.class_id} message='{self.message[:20]}...'>"

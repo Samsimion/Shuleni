@@ -17,6 +17,17 @@ class Submission(db.Model, SerializerMixin):
     remarks = db.Column(db.Text)
 
     assessment = db.relationship('Assessment', back_populates='submissions')
-    student = db.relationship('User', back_populates='submissions')
+    student = db.relationship('User',  foreign_keys=[student_id],back_populates='submissions')
+    grader = db.relationship(
+    'User',
+    back_populates='graded_submissions',
+    foreign_keys=[graded_by],
+    overlaps="graded_submissions"
+)
+
+
 
     serialize_rules = ('-assessment.submissions', '-student.submissions',)
+
+    def __repr__(self):
+       return f"<Submission id={self.id} assessment_id={self.assessment_id} student_id={self.student_id} score={self.score}>"

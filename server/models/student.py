@@ -15,6 +15,9 @@ class Student(db.Model, SerializerMixin):
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
     
 
-    user = db.relationship("User", backref="student_profile", uselist=False)
-    class_ = db.relationship("Class", backref="students")  # optional
-    school = db.relationship("School", backref="students")  # optional
+    user = db.relationship("User", back_populates="student_profile", uselist=False)
+    class_ = db.relationship("Class", back_populates="students") 
+    school = db.relationship("School", back_populates="students") 
+
+    def __repr__(self):
+        return f"<Student id={self.id} user_id={self.user_id} admission_number={self.admission_number}>"
