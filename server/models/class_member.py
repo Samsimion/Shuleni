@@ -9,9 +9,9 @@ from sqlalchemy_serializer import SerializerMixin
 
 
 
-class ClassMember(db.Model):
+class ClassMember(db.Model,SerializerMixin):
     __tablename__ = 'class_members'
     id = db.Column(db.Integer, primary_key=True)
     class_id = db.Column(db.Integer, db.ForeignKey('classes.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    joined_at = db.Column(db.DateTime, default=datetime.utcnow)
+    joined_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
