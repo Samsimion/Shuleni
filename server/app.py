@@ -16,4 +16,7 @@ from config import app, api, db, jwt, bcrypt
 
 class Home(Resource):
     def get(self):
-        return make_response({"message": "Welcome to the Late Show API"}, 200)
+        return make_response({"message": "Welcome to the Shuleni API"}, 200)
+
+
+api.add_resource(Home, '/api/home', endpoint='home')
