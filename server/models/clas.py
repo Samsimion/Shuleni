@@ -1,5 +1,4 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
+
 from app import db
 from sqlalchemy_serializer import SerializerMixin
 from datetime import datetime, timezone
@@ -19,5 +18,16 @@ class Class(db.Model, SerializerMixin):
     assessments = db.relationship('Assessment', back_populates='class_')
     attendance_records = db.relationship('Attendance', back_populates='class_')
     messages = db.relationship('Chat', back_populates='class_')
+    teachers = db.relationship(
+    "User",
+    secondary="class_members",
+    primaryjoin="Class.id == ClassMember.class_id",
+    secondaryjoin="and_(User.id == ClassMember.user_id, ClassMember.role_in_class == 'educator')",
+    viewonly=True
+)
+
 
     serialize_rules = ('-school.classes', '-members.class_', '-resources.class_', '-assessments.class_', '-attendance_records.class_', '-messages.class_',)
+
+    def __repr__(self):
+        return f"<Class id={self.id} name='{self.name}' school_id={self.school_id}>"

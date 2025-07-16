@@ -1,5 +1,4 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
+
 from app import db
 from datetime import datetime, timezone
 from sqlalchemy_serializer import SerializerMixin
@@ -20,3 +19,6 @@ class ClassMember(db.Model, SerializerMixin):
     user = db.relationship('User', back_populates='class_memberships')
 
     serialize_rules = ('-class_.members', '-user.class_memberships',)
+
+    def __repr__(self):
+        return f"<ClassMember id={self.id} user_id={self.user_id} class_id={self.class_id} role={self.role_in_class}>"

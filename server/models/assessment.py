@@ -23,3 +23,7 @@ class Assessment(db.Model, SerializerMixin):
     submissions = db.relationship('Submission', back_populates='assessment')
 
     serialize_rules = ('-class_.assessments', '-creator.assessments_created', '-submissions.assessment')
+
+
+    def __reprr__(self):
+        return f"<Assessment id={self.id} title = '{self.title}' type = {self.type} created_at={self.created_at} created_by={self.created_by}>"

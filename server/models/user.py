@@ -1,5 +1,4 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
+
 from app import db
 from sqlalchemy_serializer import SerializerMixin
 from datetime import datetime, timezone
@@ -18,14 +17,24 @@ class User(db.Model, SerializerMixin):
 
 
     school = db.relationship('School', back_populates='users')
+    teaching_classes = db.relationship("Class", secondary="class_members", back_populates="teachers")
+
     class_memberships = db.relationship('ClassMember', back_populates='user', cascade='all, delete-orphan')
     attendances = db.relationship('Attendance', back_populates='student', foreign_keys='Attendance.student_id')
     marked_attendance = db.relationship('Attendance', back_populates='educator', foreign_keys='Attendance.educator_id')
     uploaded_resources = db.relationship('Resource', back_populates='uploader')
     assessments_created = db.relationship('Assessment', back_populates='creator')
-    submissions = db.relationship('Submission', back_populates='student')
+    submissions = db.relationship('Submission', back_populates='student', foreign_keys='Submission.student_id')
+    graded_submissions = db.relationship(
+    'Submission',
+    back_populates='grader',
+    foreign_keys='Submission.graded_by'
+)
+
     messages = db.relationship('Chat', back_populates='sender')
 
     serialize_rules = ('-password_hash', '-school.users', '-class_memberships.user', '-attendances.student', '-marked_attendance.educator')
 
 
+    def __repr__(self):
+        return f"<User id={self.id} name='{self.full_name}' role={self.role} school_id={self.school_id}>"

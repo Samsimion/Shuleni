@@ -16,5 +16,9 @@ class Teacher(db.Model, SerializerMixin):
 
     
     user = db.relationship('User', backref='teacher_profile', uselist=False)
-    class_ = db.relationship("Class", backref="teachers")  # optional
-    school = db.relationship("School", backref="teachers")  # optional
+    teachers = db.relationship("User", secondary="class_members", back_populates="teaching_classes")
+
+    school = db.relationship("School", back_populates="teachers")  
+
+    def __repr__(self):
+        return f"<Teacher id={self.id} name='{self.name}' user_id={self.user_id} tsc_number={self.tsc_number}>"
