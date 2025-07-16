@@ -4,7 +4,7 @@ from app import db
 from sqlalchemy_serializer import SerializerMixin
 
 
-class AttendanceRecord(db.Model):
+class AttendanceRecord(db.Model, SerializerMixin):
     __tablename__ = 'attendance_records'
     id = db.Column(db.Integer, primary_key=True)
     class_id = db.Column(db.Integer, db.ForeignKey('classes.id'), nullable=False)

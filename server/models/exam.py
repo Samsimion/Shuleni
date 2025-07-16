@@ -5,7 +5,7 @@ from app import db
 from sqlalchemy_serializer import SerializerMixin
 
 
-class Exam(db.Model):
+class Exam(db.Model, SerializerMixin):
     __tablename__ = 'exams'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(255), nullable=False)
