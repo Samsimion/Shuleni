@@ -1,5 +1,3 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from app import db
 from sqlalchemy_serializer import SerializerMixin
 from datetime import datetime, timezone
