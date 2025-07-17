@@ -1,22 +1,46 @@
-// src/components/FeatureSection.jsx
-export default function FeatureSection() {
-  return (
-    <section className="py-16 bg-gray-100 text-center">
-      <h2 className="text-3xl font-bold mb-6">Why Choose Shuleni?</h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 px-4 md:px-20">
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-xl font-semibold mb-2">Access Anytime</h3>
-          <p className="text-gray-600">Study from anywhere, anytime, across devices.</p>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-xl font-semibold mb-2">Interactive Learning</h3>
-          <p className="text-gray-600">Engage with teachers and students just like in class.</p>
-        </div>
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h3 className="text-xl font-semibold mb-2">Tests & Exams</h3>
-          <p className="text-gray-600">Track your progress with real-time assessments.</p>
-        </div>
+const Features = () => (
+  <>
+    <section className="px-6 py-10">
+      <h2 className="text-2xl font-semibold text-center mb-6">
+        Comprehensive Online School Creation and Management Solutions
+      </h2>
+      <div className="grid md:grid-cols-3 gap-6">
+        <FeatureCard img="/f1.jpg" title="Streamlined Management for Students & Educators"
+          desc="Our platform empowers school owners to create and manage schools effortlessly." />
+        <FeatureCard img="/f2.jpg" title="Centralized Resource Storage for Learning"
+          desc="Access all educational materials in one secure location tailored for each class." />
+        <FeatureCard img="/f3.jpg" title="Interactive Features for Engaging Learning Experiences"
+          desc="Facilitate class discussions and assessments through our innovative chat and exam tools." />
       </div>
     </section>
-  );
-}
+
+    <section className="px-6 py-10 bg-gray-50">
+      <h2 className="text-2xl font-semibold text-center mb-4">Transforming Education with Innovative Features</h2>
+      <p className="text-center text-gray-600 max-w-3xl mx-auto mb-8">
+        Our platform allows for seamless creation of multiple schools. Educators can manage classes with robust tools designed for modern learning.
+      </p>
+      <div className="grid md:grid-cols-3 gap-6">
+        <FeatureCard img="/f4.jpg" title="Create Multiple Schools with Ease"
+          desc="School owners can effortlessly establish and manage distinct educational institutions." />
+        <FeatureCard img="/f5.jpg" title="Empower Educators with Advanced Tools"
+          desc="Educators can take attendance, add resources, and engage students." />
+        <FeatureCard img="/f6.jpg" title="Centralized Resource Storage for Students"
+          desc="Students can access notes and materials in one place." />
+      </div>
+    </section>
+
+    <section className="bg-gray-200 py-6 px-4 text-center font-semibold text-sm">
+      Shuleni revolutionizes the educational experience by providing a fully online platform that mirrors traditional schooling.
+    </section>
+  </>
+);
+
+const FeatureCard = ({ img, title, desc }) => (
+  <div>
+    <img src={img} alt="" className="w-full h-40 object-cover rounded" />
+    <h3 className="font-semibold mt-3">{title}</h3>
+    <p className="text-gray-600 text-sm mt-1">{desc}</p>
+  </div>
+);
+
+export default Features;
