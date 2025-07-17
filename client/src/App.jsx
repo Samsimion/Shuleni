@@ -1,5 +1,8 @@
 import NavBar from "./components/NavBar";
-
+import FeatureSection from "./components/FeatureSection";
+import ContactForm from "./components/ContactForm";
+import Footer from "./components/Footer";
+import LandingPage from "./pages/LandingPage";
 
 
 function App() {
@@ -7,9 +10,11 @@ function App() {
 
   return (
     <>
-      <div className='bg-amber-800 justify-center'>
-        <p className='text-4xl'>hello</p>
-      </div>
+      <NavBar/>
+      <LandingPage/>
+      <FeatureSection/>
+      <ContactForm/>
+      <Footer/>
     </>
   )
 }
