@@ -1,23 +1,15 @@
-// src/components/Hero.jsx
-export default function Hero() {
-  return (
-    <section className="bg-blue-50 py-20 px-6 md:px-12 lg:px-24">
-      <div className="max-w-6xl mx-auto text-center">
-        <h1 className="text-4xl md:text-5xl font-bold text-gray-800 leading-tight">
-          Welcome to Shuleni
-        </h1>
-        <p className="mt-4 text-lg md:text-xl text-gray-600">
-          Bringing the full school experience online — interact, learn, and grow from anywhere.
-        </p>
-        <div className="mt-8">
-          <a
-            href="#features"
-            className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition duration-300"
-          >
-            Explore Features
-          </a>
-        </div>
-      </div>
-    </section>
-  );
-}
+const Hero = () => (
+  <section className="flex flex-col md:flex-row items-center justify-between p-8">
+    <div className="max-w-xl">
+      <h1 className="text-3xl font-bold mb-4">
+        Welcome to Shuleni:<br />Transforming Education for a Digital World
+      </h1>
+      <p className="text-gray-600">
+        Join us in redefining online learning—interactive, accessible and high-quality education for all.
+      </p>
+    </div>
+    <img src="/hero-img.png" alt="Hero" className="w-80 mt-8 md:mt-0" />
+  </section>
+);
+
+export default Hero;
