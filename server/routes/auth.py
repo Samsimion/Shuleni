@@ -240,7 +240,67 @@ class Login(Resource):
         return {'error': 'Invalid credentials'}, 401
 
 
+class ChangePassword(Resource):
+    """Allow users to change their password after first login"""
+    @jwt_required()
+    def post(self):
+        current_user = get_jwt_identity()
+        data = request.get_json()
+        
+        old_password = data.get('old_password')
+        new_password = data.get('new_password')
+        
+        if not old_password or not new_password:
+            return {"error": "Old password and new password are required"}, 400
+        
+        user = User.query.get(current_user['id'])
+        if not user:
+            return {"error": "User not found"}, 404
+        
+        if not bcrypt.check_password_hash(user.password_hash, old_password):
+            return {"error": "Invalid old password"}, 401
+        
+        # Hash new password
+        new_password_hashed = bcrypt.generate_password_hash(new_password).decode('utf-8')
+        user.password_hash = new_password_hashed
+        
+        db.session.commit()
+        
+        return {"message": "Password changed successfully"}, 200
 
+class UserProfile(Resource):
+    """Get current user profile"""
+    @jwt_required()
+    def get(self):
+        current_user = get_jwt_identity()
+        
+        user = User.query.get(current_user['id'])
+        if not user:
+            return {"error": "User not found"}, 404
+        
+        profile_data = {
+            "id": user.id,
+            "full_name": user.full_name,
+            "email": user.email,
+            "role": user.role,
+            "school_id": user.school_id,
+            "created_at": user.created_at.isoformat()
+        }
+        
+        # Add role-specific data
+        if user.role == 'student' and user.student_profile:
+            profile_data.update({
+                "admission_number": user.student_profile.admission_number,
+                "grade": user.student_profile.grade,
+                "class_id": user.student_profile.class_id
+            })
+        elif user.role == 'educator' and user.teacher_profile:
+            profile_data.update({
+                "tsc_number": user.teacher_profile.tsc_number,
+                "class_id": user.teacher_profile.class_id
+            })
+        
+        return profile_data, 200
 
 
 
