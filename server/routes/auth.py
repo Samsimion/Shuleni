@@ -4,6 +4,8 @@ from flask_restful import Resource
 from models import User, Student, Teacher, School
 from app import db, bcrypt
 from datetime import datetime, timezone
+import secrets
+import string
 
 
 class SchoolOwnerRegister(Resource):
@@ -48,6 +50,82 @@ class SchoolOwnerRegister(Resource):
         db.session.commit()
         
         return {"message": "School and owner created successfully"}, 201
+    
+
+
+class AdminCreateStudent(Resource):
+    """Admin creates student accounts"""
+    @jwt_required()
+    def post(self):
+        current_user = get_jwt_identity()
+        
+        # Only owners can create students
+        if current_user['role'] != 'owner':
+            return {"error": "Unauthorized"}, 403
+            
+        data = request.get_json()
+        
+        required_fields = ['full_name', 'admission_number']
+        for field in required_fields:
+            if not data.get(field):
+                return {"error": f"{field} cannot be empty"}, 400
+        
+        # Check if admission number already exists in this school
+        existing_student = Student.query.filter_by(
+            admission_number=data['admission_number'],
+            school_id=current_user['school_id']
+        ).first()
+        
+        if existing_student:
+            return {"error": "Admission number already exists"}, 409
+        
+        # Generate temporary password
+        temp_password = self.generate_temp_password()
+        password_hashed = bcrypt.generate_password_hash(temp_password).decode('utf-8')
+        
+        # Create user account
+        user = User(
+            full_name=data['full_name'],
+            email=f"{data['admission_number']}@temp.school",  # Temporary email
+            password_hash=password_hashed,
+            role='student',
+            school_id=current_user['school_id'],
+            created_at=datetime.now(timezone.utc)
+        )
+        
+        db.session.add(user)
+        db.session.flush()
+        
+        # Create student profile
+        student = Student(
+            user_id=user.id,
+            school_id=current_user['school_id'],
+            admission_number=data['admission_number'],
+            class_id=data.get('class_id'),
+            created_at=datetime.now(timezone.utc)
+        )
+        
+        db.session.add(student)
+        db.session.commit()
+        
+        return {
+            "message": "Student created successfully",
+            "admission_number": data['admission_number'],
+            "temporary_password": temp_password,
+            "student_id": student.id
+        }, 201
+    
+    def generate_temp_password(self):
+        """Generate a secure temporary password"""
+        length = 8
+        characters = string.ascii_letters + string.digits
+        return ''.join(secrets.choice(characters) for _ in range(length))
+    
+    
+
+
+
+
         
         
         
