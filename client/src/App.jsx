@@ -7,7 +7,7 @@ function App() {
   return (
     <div>
       <header className="flex items-center justify-between p-4 border-b">
-        <img src="/logo.png" alt="Shuleni Logo" className="w-10 h-10" />
+        <img src="/logo.png" alt="Shuleni Logo" className="w-20 h-20" />
         <nav className="space-x-4 text-sm font-medium">
           <a href="#">Home</a>
           <a href="#">Services</a>
