@@ -189,3 +189,62 @@ class AdminCreateEducator(Resource):
 
 
 
+class Login(Resource):
+    """Universal login for all user types"""
+    def post(self):
+        data = request.get_json()
+        username = data.get('username')  # Can be email or admission_number
+        password = data.get('password')
+        
+        if not username or not password:
+            return {"error": "Username and password are required"}, 400
+        
+        user = None
+        
+        # Try to find user by email first (for owners and educators)
+        user = User.query.filter_by(email=username).first()
+        
+        # If not found by email, try by admission number (for students)
+        if not user:
+            student = Student.query.filter_by(admission_number=username).first()
+            if student:
+                user = student.user
+        
+        if user and bcrypt.check_password_hash(user.password_hash, password):
+            # Create additional identity info based on role
+            identity = {
+                "id": user.id,
+                "role": user.role,
+                "school_id": user.school_id,
+                "full_name": user.full_name
+            }
+            
+            # Add role-specific info
+            if user.role == 'student':
+                identity["admission_number"] = user.student_profile.admission_number
+            elif user.role == 'educator':
+                identity["school_email"] = user.email
+                
+            token = create_access_token(identity=identity)
+            
+            return {
+                'token': token,
+                'role': user.role,
+                'full_name': user.full_name,
+                'id': user.id,
+                'school_id': user.school_id,
+                'email': user.email if user.role != 'student' else None,
+                'admission_number': user.student_profile.admission_number if user.role == 'student' else None
+            }, 200
+        
+        return {'error': 'Invalid credentials'}, 401
+
+
+
+
+
+
+        
+        
+        
+        
