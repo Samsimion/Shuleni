@@ -8,7 +8,7 @@ const Hero = () => (
         Join us in redefining online learning—interactive, accessible and high-quality education for all.
       </p>
     </div>
-    <img src="/hero-img.png" alt="Hero" className="w-80 mt-8 md:mt-0" />
+    <img src="/hero-img.jpg" alt="Hero" className="w-80 mt-8 md:mt-0" />
   </section>
 );
 

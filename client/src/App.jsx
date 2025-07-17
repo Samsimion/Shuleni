@@ -1,7 +1,7 @@
 import Hero from './components/Hero';
 import Features from './components/Features';
 import Steps from './components/Steps';
-import Contact from './components/Contact';
+import Contact from './components/ContactForm';
 
 function App() {
   return (
