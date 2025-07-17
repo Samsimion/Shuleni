@@ -29,9 +29,19 @@ const Features = () => (
       </div>
     </section>
 
-    <section className="bg-gray-200 py-6 px-4 text-center font-semibold text-sm">
+    <section
+  className="relative w-full h-48 md:h-56 my-10"
+  
+>
+  <div className="absolute inset-0 bg-sky-400 bg-opacity-30"></div>
+  <div className="relative z-10 flex items-center justify-center h-full px-4 text-center">
+    <p className="text-white text-lg md:text-xl font-semibold max-w-3xl">
       Shuleni revolutionizes the educational experience by providing a fully online platform that mirrors traditional schooling.
-    </section>
+    </p>
+  </div>
+</section>
+
+
   </>
 );
 

@@ -1,4 +1,3 @@
-// src/components/ContactForm.jsx
 export default function ContactForm() {
   return (
     <section className="bg-white py-16 px-6 md:px-20">
