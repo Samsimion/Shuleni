@@ -17,7 +17,7 @@ class User(db.Model, SerializerMixin):
 
 
     school = db.relationship('School', back_populates='users')
-    teaching_classes = db.relationship("Class", secondary="class_members", back_populates="teachers")
+    
 
     class_memberships = db.relationship('ClassMember', back_populates='user', cascade='all, delete-orphan')
     attendances = db.relationship('Attendance', back_populates='student', foreign_keys='Attendance.student_id')
@@ -30,6 +30,10 @@ class User(db.Model, SerializerMixin):
     back_populates='grader',
     foreign_keys='Submission.graded_by'
 )
+    student_profile = db.relationship("Student", back_populates="user", uselist=False)
+
+    
+    
 
     messages = db.relationship('Chat', back_populates='sender')
 

@@ -11,12 +11,15 @@ class School(db.Model, SerializerMixin):
     name = db.Column(db.String(120), nullable=False)
     description = db.Column(db.Text)
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
-    #owner_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    owner_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     
 
     users = db.relationship('User', back_populates='school', cascade='all, delete-orphan')
     classes = db.relationship('Class', back_populates='school', cascade='all, delete-orphan')
-    
+    teachers = db.relationship("Teacher", back_populates="school", cascade="all, delete-orphan")
+    students = db.relationship('Student', back_populates='school', cascade='all, delete-orphan')
+
+
 
     serialize_rules = ('-users.school', '-classes.school',)
 
