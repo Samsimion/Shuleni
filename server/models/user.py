@@ -17,7 +17,7 @@ class User(db.Model, SerializerMixin):
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
 
 
-    school = db.relationship('School', back_populates='users')
+    school = db.relationship('School', back_populates='users', foreign_keys=[school_id])
     
 
     class_memberships = db.relationship('ClassMember', back_populates='user', cascade='all, delete-orphan')
