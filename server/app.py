@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from flask import Flask, make_response
+from flask import Flask,request, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api, Resource
 from flask_migrate import Migrate
