@@ -1,9 +1,9 @@
 from marshmallow import Schema, fields, validate, validates_schema, ValidationError
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from models import User, Student, Teacher, School
-from app import db
+from extensions import db
 
-# Auto-generated schemas for database models
+# schemas for database models
 class UserSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = User

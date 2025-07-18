@@ -1,4 +1,4 @@
-from app import db
+from extensions import db
 from datetime import timezone, datetime
 from sqlalchemy_serializer import SerializerMixin
 
