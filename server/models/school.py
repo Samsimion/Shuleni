@@ -14,7 +14,8 @@ class School(db.Model, SerializerMixin):
     owner_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     
 
-    users = db.relationship('User', back_populates='school', cascade='all, delete-orphan')
+    users = db.relationship('User', back_populates='school', cascade='all, delete-orphan', foreign_keys='User.school_id')
+    owner = db.relationship('User', foreign_keys=[owner_id])  # Optional for querying the owner directly
     classes = db.relationship('Class', back_populates='school', cascade='all, delete-orphan')
     teachers = db.relationship("Teacher", back_populates="school", cascade="all, delete-orphan")
     students = db.relationship('Student', back_populates='school', cascade='all, delete-orphan')
