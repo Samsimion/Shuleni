@@ -9,8 +9,7 @@ from flask_bcrypt import Bcrypt
 from flask_marshmallow import Marshmallow
 from marshmallow import ValidationError
 from datetime import timedelta
-from routes.auth_routes import SchoolOwnerRegister, AdminCreateEducator, AdminCreateStudent, Login, ChangePassword, UserProfile
-from schemas import SchoolOwnerRegistrationSchema, StudentCreationSchema, EducatorCreationSchema, LoginSchema, ChangePasswordSchema, UserProfileResponseSchema, AuthResponseSchema, UserCreationResponseSchema
+
 
 from config import Config
 
@@ -24,6 +23,10 @@ jwt = JWTManager(app)
 bcrypt = Bcrypt(app)
 CORS(app)
 api = Api(app)
+
+# import routes
+from routes.auth_routes import SchoolOwnerRegister, AdminCreateEducator, AdminCreateStudent, Login, ChangePassword, UserProfile
+from schemas import SchoolOwnerRegistrationSchema, StudentCreationSchema, EducatorCreationSchema, LoginSchema, ChangePasswordSchema, UserProfileResponseSchema, AuthResponseSchema, UserCreationResponseSchema
 
 # import models
 from models import *
