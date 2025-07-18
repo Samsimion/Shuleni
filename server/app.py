@@ -18,7 +18,7 @@ db.init_app(app)
 ma.init_app(app)
 jwt.init_app(app)
 bcrypt.init_app(app)
-cors.init_app(app)
+cors.init_app(app, resources={r"/api/*": {"origins": "http://localhost:5173"}}, supports_credentials=True)
 api = Api(app)
 migrate = Migrate(app, db)
 
@@ -146,11 +146,15 @@ class Home(Resource):
 
 # register the route
 api.add_resource(Home, '/api/home', endpoint='home')
-api.add_resource(ValidatedSchoolOwnerRegister, '/api/register/owner')
-api.add_resource(ValidatedAdminCreateStudent, '/api/admin/create-student')
-api.add_resource(ValidatedAdminCreateEducator, '/api/admin/create-educator')
-api.add_resource(ValidatedLogin, '/api/login')
-api.add_resource(ValidatedChangePassword, '/api/change-password')
-api.add_resource(UserProfile, '/api/profile')
-api.add_resource(SchoolStats, '/api/admin/stats')
-# api.add_resource(AssignUserToClass, '/api/admin/assign-class')
+# api.add_resource(ValidatedSchoolOwnerRegister, '/api/register/owner')
+# api.add_resource(ValidatedAdminCreateStudent, '/api/admin/create-student')
+# api.add_resource(ValidatedAdminCreateEducator, '/api/admin/create-educator')
+# api.add_resource(ValidatedLogin, '/api/login')
+# api.add_resource(ValidatedChangePassword, '/api/change-password')
+# api.add_resource(UserProfile, '/api/profile')
+# api.add_resource(SchoolStats, '/api/admin/stats')
+# # api.add_resource(AssignUserToClass, '/api/admin/assign-class')
+
+
+api.add_resource(Login, '/api/login', endpoint='login')
+api.add_resource(SchoolOwnerRegister, '/api/register/owner', endpoint='register_owner') 
