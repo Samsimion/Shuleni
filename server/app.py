@@ -31,3 +31,4 @@ class Home(Resource):
 
 # register the route
 api.add_resource(Home, '/api/home', endpoint='home')
+import routes.attendance_route
