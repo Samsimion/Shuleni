@@ -21,7 +21,7 @@ class SchoolOwnerRegister(Resource):
             if not data.get(field):
                 return {"error": f"{field} cannot be empty"}, 400
             
-        password_hashed = bcrypt.generate_password_hash(data['password']).decode('utf-8')
+        # password_hashed = bcrypt.generate_password_hash(data['password']).decode('utf-8')
         
         # Create school first
         school = School(
@@ -37,7 +37,7 @@ class SchoolOwnerRegister(Resource):
         user = User(
             email=data['email'],
             full_name=data['full_name'],
-            password_hash=password_hashed,
+            password_hash=data['password'],
             role='owner',
             school_id=school.id,
             created_at=datetime.now(timezone.utc)
@@ -81,13 +81,13 @@ class AdminCreateStudent(Resource):
         
         # Generate temporary password
         temp_password = self.generate_temp_password()
-        password_hashed = bcrypt.generate_password_hash(temp_password).decode('utf-8')
+        # password_hashed = bcrypt.generate_password_hash(temp_password).decode('utf-8')
         
         # Create user account
         user = User(
             full_name=data['full_name'],
             email=f"{data['admission_number']}@temp.school",  # Temporary email
-            password_hash=password_hashed,
+            password_hash=temp_password,
             role='student',
             school_id=current_user['school_id'],
             created_at=datetime.now(timezone.utc)
@@ -147,13 +147,13 @@ class AdminCreateEducator(Resource):
         
         # Generate temporary password
         temp_password = self.generate_temp_password()
-        password_hashed = bcrypt.generate_password_hash(temp_password).decode('utf-8')
+        # password_hashed = bcrypt.generate_password_hash(temp_password).decode('utf-8')
         
         # Create user account
         user = User(
             full_name=data['full_name'],
             email=data['school_email'],
-            password_hash=password_hashed,
+            password_hash=temp_password,
             role='educator',
             school_id=current_user['school_id'],
             created_at=datetime.now(timezone.utc)
@@ -204,14 +204,16 @@ class Login(Resource):
         
         # Try to find user by email first (for owners and educators)
         user = User.query.filter_by(email=username).first()
-        
+       
         # If not found by email, try by admission number (for students)
         if not user:
             student = Student.query.filter_by(admission_number=username).first()
             if student:
+                print("Found student:", student)
+                print("Student.user:", student.user)
                 user = student.user
         
-        if user and bcrypt.check_password_hash(user.password_hash, password):
+        if user and user.authenticate(password):
             # Create additional identity info based on role
             identity = {
                 "id": user.id,
@@ -262,8 +264,8 @@ class ChangePassword(Resource):
             return {"error": "Invalid old password"}, 401
         
         # Hash new password
-        new_password_hashed = bcrypt.generate_password_hash(new_password).decode('utf-8')
-        user.password_hash = new_password_hashed
+        # new_password_hashed = bcrypt.generate_password_hash(new_password).decode('utf-8')
+        user.password_hash = new_password
         
         db.session.commit()
         
@@ -291,7 +293,7 @@ class UserProfile(Resource):
         # Add role-specific data
         if user.role == 'student' and user.student_profile:
             profile_data.update({
-                "admission_number": user.student_profile.admission_number,
+                'admission_number': getattr(user.student_profile, 'admission_number', None) if user.role == 'student' else None,
                 "grade": user.student_profile.grade,
                 "class_id": user.student_profile.class_id
             })

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Lock, Shield, User } from 'lucide-react';
-import { useAuth } from '../hooks/useAuth';
+import useAuth  from '../hooks/useAuth';
 import axios from '../api/axios';
 
 const Login = () => {
@@ -22,7 +22,7 @@ const Login = () => {
     try {
       const res = await axios.post('/login', formData);
       login(res.data, res.data.token);
-      navigate('/dashboard');
+      navigate('/');
     } catch (err) {
       alert('Login failed: Invalid credentials');
       console.error(err);

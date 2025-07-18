@@ -2,10 +2,11 @@ import axios from 'axios';
 
 // Create an Axios instance with base config
 const instance = axios.create({
-  baseURL: 'http://127.0.0.1:5555', // adjust if using a different port or base
+  baseURL: 'http://127.0.0.1:5000/api', // adjust if using a different port or base
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true,
 });
 
 // Request interceptor to attach token

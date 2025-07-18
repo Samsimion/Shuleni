@@ -11,7 +11,7 @@ class User(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     full_name = db.Column(db.String(120), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    _password_hash = db.Column('password_hash', db.String(255), nullable=False)
+    _password_hash = db.Column(db.String(255), nullable=False)
     role = db.Column(db.Enum('owner', 'educator', 'student', name='user_roles'), nullable=False)
     school_id = db.Column(db.Integer, db.ForeignKey('schools.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
@@ -40,15 +40,18 @@ class User(db.Model, SerializerMixin):
     
     @hybrid_property
     def password_hash(self):
-        raise AttributeError('Password hash may not be viewed.')
+        return self._password_hash
 
     @password_hash.setter
     def password_hash(self, password):
-        hashed_password = bcrypt.generate_password_hash(password.encode('utf-8'))
-        self._password_hash = hashed_password.decode('utf-8')
+        if password:
+            hashed = bcrypt.generate_password_hash(password).decode('utf-8')
+            self._password_hash = hashed
+        else:
+            raise ValueError("Password cannot be empty")
 
     def authenticate(self, password):
-        return bcrypt.check_password_hash(self._password_hash, password.encode('utf-8'))
+        return bcrypt.check_password_hash(self._password_hash, password)
 
 
     def __repr__(self):

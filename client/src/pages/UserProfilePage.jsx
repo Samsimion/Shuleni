@@ -1,4 +1,4 @@
-function UserProfilePage() {
+export const UserProfilePage = () =>{
   return (
     <div>
       <h1>User Profile</h1>
@@ -7,4 +7,3 @@ function UserProfilePage() {
   );
 }
 
-export default UserProfilePage;
