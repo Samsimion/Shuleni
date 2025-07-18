@@ -18,7 +18,14 @@ class Attendance(db.Model, SerializerMixin):
     student = db.relationship('User', back_populates='attendances', foreign_keys=[student_id])
     educator = db.relationship('User', back_populates='marked_attendance', foreign_keys=[educator_id])
 
-    serialize_rules = ('-class_.attendance_records', '-student.attendances', '-educator.marked_attendance')
+    serialize_rules = ('-class_.attendance_records', '-student.attendances', '-educator.marked_attendance','student_name',)
+
+    @property
+    def student_name(self):
+        if self.student and self.student.user:
+            return self.student.user.name
+        return None
+  
 
     def __repr__(self):
         return f"<Attendance id={self.id} student_id={self.student_id} class_id= {self.class_id} date={self.date} status={self.status}>"

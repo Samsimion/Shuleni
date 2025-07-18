@@ -1,16 +1,15 @@
 from flask import Flask,request,make_response, Response
 from flask_marshmallow import Marshmallow
 from flask_migrate import Migrate
-from flask_restful import API,Resource
-from app import app,db,api
+from flask_restful import Api,Resource
+from app import app,db,api,ma
 from sqlalchemy import func, desc
 import csv
 import io
-from models import Attendance,User
+from models import Attendance,User,Student
 
 
-ma = Marshmallow(app, db)
-db.init_app(app)
+
 migrate = Migrate(app,db)
 
 class AttendanceSchema(ma.SQLAlchemySchema):
@@ -27,7 +26,11 @@ class AttendanceSchema(ma.SQLAlchemySchema):
     student_name = ma.Method("get_student_name")
 
     def get_student_name(self, obj):
-        return obj.student.name if obj.student else None
+        try:
+            return getattr(obj.student.user, 'full_name', None)
+        except:
+            return None
+
 
 
     url = ma.Hyperlinks(
@@ -70,7 +73,9 @@ class Attendances(Resource):
             export = request.args.get("export", "false").lower() == "true"
       
 
-            query = Attendance.query
+            query = Attendance.query.options(
+                db.joinedload(Attendance.student)
+            )
             
 
             if class_id:
@@ -110,7 +115,9 @@ class Attendances(Resource):
             if order_by == "date":
                 query = query.order_by(Attendance.date.desc() if order_dir=="desc" else Attendance.date.asc())
             elif order_by == "student_name":
-                query = query.join(User).order_by(User.name.asc() if order_dir =="asc" else User.name.desc())
+                query = query.join(User, Attendance.student_id == User.id).options(
+                    db.joinedload(Attendance.student)
+                ).order_by(User.full_name.asc() if order_dir == "asc" else User.full_name.desc())
 
             page = request.args.get("page", 1, type=int)
             per_page = request.args.get("per_page", 30, type=int)
@@ -130,7 +137,8 @@ class Attendances(Resource):
                 for a in attendances:
                     writer.writerow([
                         a.id, a.class_id, a.student_id,a.educator_id, a.date,a.status,
-                        a.student.name if a.student else ""
+                        a.student.user.full_name if a.student and a.student.user else ""
+
                     ])
                 res = Response(output.getvalue(), mimetype="text/csv")
                 res.headers.set("Content-Disposition", "attachment", filename="attendance.csv")
@@ -180,7 +188,9 @@ api.add_resource(Attendances, "/attendances")
 
 class AttendanceById(Resource):
     def get(self,id):
-        attendance = Attendance.query.filter(Attendance.id==id).first()
+        attendance = Attendance.query.options(
+            db.joinedload(Attendance.student)
+        ).filter(Attendance.id==id).first()
         if not attendance:
             return make_response({"error":"Attendance record not found"}, 404)
         response = make_response(
@@ -191,7 +201,9 @@ class AttendanceById(Resource):
     
     def patch(self,id):
         data = request.get_json()
-        patch_attendance = Attendance.query.filter(Attendance.id==id).first()
+        patch_attendance = Attendance.query.options(
+            db.joinedload(Attendance.student)
+        ).filter(Attendance.id==id).first()
         if not patch_attendance:
             return make_response({"error": "Attendance record not found"},404)
         for attr, value in data.items():

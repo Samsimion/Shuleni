@@ -55,6 +55,37 @@ with app.app_context():
         students.append(student)
     db.session.add_all(students)
     db.session.commit()
+    # --- Create Users ---
+    # ... your user creation here ...
+
+    # --- Create Students ---
+    # ... your student creation here ...
+
+    # --- Create Classes ---
+    print("🏫 Creating classes...")
+    class_a = Class(name="Form 1 East", school_id=school.id)
+    class_b = Class(name="Form 2 West", school_id=school.id)
+    db.session.add_all([class_a, class_b])
+    db.session.commit()
+
+    # ✅ Now we can safely create student profiles
+    print("📄 Creating student profiles...")
+    from models import Student  # only if not already imported
+
+    student_profiles = []
+    for i, student in enumerate(students):
+        profile = Student(
+            user_id=student.id,
+            school_id=school.id,
+            admission_number=f"ADM2025-{i+1:03d}",
+            grade="Form 1" if i < 3 else "Form 2",
+            class_id=class_a.id if i < 3 else class_b.id
+        )
+        student_profiles.append(profile)
+
+    db.session.add_all(student_profiles)
+    db.session.commit()
+
 
     # --- Create Classes ---
     print("🏫 Creating classes...")
