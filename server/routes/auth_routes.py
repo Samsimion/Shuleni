@@ -92,7 +92,7 @@ class AdminCreateStudent(Resource):
             school_id=current_user['school_id'],
             created_at=datetime.now(timezone.utc)
         )
-        
+       
         db.session.add(user)
         db.session.flush()
         
@@ -101,7 +101,8 @@ class AdminCreateStudent(Resource):
             user_id=user.id,
             school_id=current_user['school_id'],
             admission_number=data['admission_number'],
-            class_id=data.get('class_id'),
+            grade=data['grade'], # Optional - can be None initially
+            class_id=data.get('class_id'), # Optional - can be None initially
             created_at=datetime.now(timezone.utc)
         )
         
