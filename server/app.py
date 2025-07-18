@@ -25,6 +25,7 @@ migrate = Migrate(app, db)
 # import routes
 from routes.auth_routes import SchoolOwnerRegister, AdminCreateEducator, AdminCreateStudent, Login, ChangePassword, UserProfile
 from schemas import SchoolOwnerRegistrationSchema, StudentCreationSchema, EducatorCreationSchema, LoginSchema, ChangePasswordSchema, UserProfileResponseSchema, AuthResponseSchema, UserCreationResponseSchema
+from routes.school_stats import SchoolStats
 
 # import models
 from models import *
@@ -151,5 +152,5 @@ api.add_resource(ValidatedAdminCreateEducator, '/api/admin/create-educator')
 api.add_resource(ValidatedLogin, '/api/login')
 api.add_resource(ValidatedChangePassword, '/api/change-password')
 api.add_resource(UserProfile, '/api/profile')
-# api.add_resource(SchoolStats, '/api/admin/stats')
+api.add_resource(SchoolStats, '/api/admin/stats')
 # api.add_resource(AssignUserToClass, '/api/admin/assign-class')
