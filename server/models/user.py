@@ -1,5 +1,5 @@
 
-
+from extensions import db, bcrypt
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy_serializer import SerializerMixin
 from datetime import datetime, timezone
@@ -54,4 +54,3 @@ class User(db.Model, SerializerMixin):
     def __repr__(self):
         return f"<User id={self.id} name='{self.full_name}' role={self.role} school_id={self.school_id}>"
     
-from app import db, bcrypt

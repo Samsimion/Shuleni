@@ -1,28 +1,26 @@
 #!/usr/bin/env python3
 from flask import Flask, make_response, request
-from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api, Resource
 from flask_migrate import Migrate
-from flask_jwt_extended import JWTManager, jwt_required, get_jwt_identity
-from flask_cors import CORS
-from flask_bcrypt import Bcrypt
-from flask_marshmallow import Marshmallow
+from config import Config
 from marshmallow import ValidationError
 from datetime import timedelta
+from flask_jwt_extended import jwt_required
 
-
-from config import Config
+# Import from extensions
+from extensions import db, ma, jwt, bcrypt, cors
 
 app = Flask(__name__)
 app.config.from_object(Config)
 
-db = SQLAlchemy(app)
-ma = Marshmallow(app)
-migrate = Migrate(app, db)
-jwt = JWTManager(app)
-bcrypt = Bcrypt(app)
-CORS(app)
+# Initialize extensions with app
+db.init_app(app)
+ma.init_app(app)
+jwt.init_app(app)
+bcrypt.init_app(app)
+cors.init_app(app)
 api = Api(app)
+migrate = Migrate(app, db)
 
 # import routes
 from routes.auth_routes import SchoolOwnerRegister, AdminCreateEducator, AdminCreateStudent, Login, ChangePassword, UserProfile
@@ -143,7 +141,15 @@ class ValidatedChangePassword(ChangePassword):
 # define your resource class
 class Home(Resource):
     def get(self):
-        return make_response({"message": "Welcome to the Shuleni API"}, 200)
+        return make_response({"status": "healthy", "message": "Shuleni API is running"}, 200)
 
 # register the route
 api.add_resource(Home, '/api/home', endpoint='home')
+api.add_resource(ValidatedSchoolOwnerRegister, '/api/register/owner')
+api.add_resource(ValidatedAdminCreateStudent, '/api/admin/create-student')
+api.add_resource(ValidatedAdminCreateEducator, '/api/admin/create-educator')
+api.add_resource(ValidatedLogin, '/api/login')
+api.add_resource(ValidatedChangePassword, '/api/change-password')
+api.add_resource(UserProfile, '/api/profile')
+# api.add_resource(SchoolStats, '/api/admin/stats')
+# api.add_resource(AssignUserToClass, '/api/admin/assign-class')
