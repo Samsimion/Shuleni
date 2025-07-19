@@ -1,5 +1,6 @@
 
-from app import db
+from extensions import db, bcrypt
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy_serializer import SerializerMixin
 from datetime import datetime, timezone
 
@@ -15,8 +16,8 @@ class User(db.Model, SerializerMixin):
     school_id = db.Column(db.Integer, db.ForeignKey('schools.id'), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
 
-    
-    school = db.relationship('School', back_populates='users', foreign_keys=[school_id])
+
+    school = db.relationship('School', back_populates='users')
     
 
     class_memberships = db.relationship('ClassMember', back_populates='user', cascade='all, delete-orphan')
@@ -31,23 +32,12 @@ class User(db.Model, SerializerMixin):
     foreign_keys='Submission.graded_by'
 )
     student_profile = db.relationship("Student", back_populates="user", uselist=False)
-
     
-    
-
     messages = db.relationship('Chat', back_populates='sender')
 
     serialize_rules = ('-password_hash', '-school.users', '-class_memberships.user', '-attendances.student', '-marked_attendance.educator')
 
-    @property
-    def password_hash(self):
-        return self._password_hash
-
-    @password_hash.setter
-    def password_hash(self, value):
-        self._password_hash = value
-
-    
 
     def __repr__(self):
         return f"<User id={self.id} name='{self.full_name}' role={self.role} school_id={self.school_id}>"
+    

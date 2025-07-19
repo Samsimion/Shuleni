@@ -1,4 +1,4 @@
-from app import db
+from extensions import db
 from datetime import timezone, datetime
 from sqlalchemy_serializer import SerializerMixin
 
@@ -14,7 +14,7 @@ class School(db.Model, SerializerMixin):
     owner_id = db.Column(db.Integer, db.ForeignKey('users.id') ,nullable=True)
     
 
-    users = db.relationship('User', back_populates='school', foreign_keys='User.school_id', cascade='all, delete-orphan')
+    users = db.relationship('User', back_populates='school', cascade='all, delete-orphan')
     classes = db.relationship('Class', back_populates='school', cascade='all, delete-orphan')
     teachers = db.relationship("Teacher", back_populates="school", cascade="all, delete-orphan")
     students = db.relationship('Student', back_populates='school', cascade='all, delete-orphan')
