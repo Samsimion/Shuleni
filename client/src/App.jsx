@@ -9,11 +9,13 @@ function App() {
       <header className="flex items-center justify-between p-4 border-b">
         <img src="/logo.png" alt="Shuleni Logo" className="w-20 h-20" />
         <nav className="space-x-4 text-sm font-medium">
-          <a href="#">Home</a>
-          <a href="#">Services</a>
-          <a href="#">Features</a>
-          <a href="#">Contact Us</a>
-          <a href="#" className="bg-black text-white px-4 py-2 rounded">Get Started</a>
+  <a href="#home" className="hover:text-blue-500">Home</a>
+  <a href="#services" className="hover:text-blue-500">Services</a>
+  <a href="#features" className="hover:text-blue-500">Features</a>
+  <a href="#contact" className="hover:text-blue-500">Contact Us</a>
+  <a href="#" className="bg-black text-white px-4 py-2 rounded hover:bg-blue-600">Get Started</a>
+
+
         </nav>
       </header>
 
