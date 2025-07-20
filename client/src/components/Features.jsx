@@ -1,6 +1,6 @@
 const Features = () => (
   <>
-    <section className="px-6 py-10">
+    <section id = "Features" className="px-6 py-10">
       <h2 className="text-2xl font-semibold text-center mb-6">
         Comprehensive Online School Creation and Management Solutions
       </h2>
