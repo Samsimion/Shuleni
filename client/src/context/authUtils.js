@@ -1,14 +1,22 @@
+export const USER_KEY = 'user';
+export const TOKEN_KEY = 'token';
 
+export const isAdmin = (user) => user?.role === 'owner';
 
-export const tokenKey = 'auth_token';
-
-export const isAdmin = (user) => user?.role === 'admin';
-
-export const saveUserToStorage = (user) => {
-  localStorage.setItem('user', JSON.stringify(user));
+export const saveUserToStorage = (user, token) => {
+  localStorage.setItem(USER_KEY, JSON.stringify(user));
+  localStorage.setItem(TOKEN_KEY, token);
 };
 
 export const removeUserFromStorage = () => {
-  localStorage.removeItem('user');
-  localStorage.removeItem(tokenKey);
+  localStorage.removeItem(USER_KEY);
+  localStorage.removeItem(TOKEN_KEY);
 };
+
+export const getUserFromStorage = () => {
+  const stored = localStorage.getItem(USER_KEY);
+  return stored ? JSON.parse(stored) : null;
+};
+
+export const getTokenFromStorage = () => localStorage.getItem(TOKEN_KEY);
+

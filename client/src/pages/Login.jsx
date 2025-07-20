@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Lock, Shield, User } from 'lucide-react';
 import useAuth  from '../hooks/useAuth';
 import axios from '../api/axios';
@@ -22,7 +22,22 @@ const Login = () => {
     try {
       const res = await axios.post('/login', formData);
       login(res.data, res.data.token);
-      navigate('/');
+      
+      // Redirect based on role
+    const userRole = res.data.role;
+
+
+    if (userRole === 'owner') {
+      navigate('/admin-dashboard');
+    } else if (userRole === 'educator') {
+      navigate('/educator-dashboard');
+    } else if (userRole === 'student') {
+      navigate('/student-dashboard');
+    } else {
+      navigate('/'); // fallback or 404
+    }
+
+
     } catch (err) {
       alert('Login failed: Invalid credentials');
       console.error(err);
@@ -97,9 +112,9 @@ const Login = () => {
 
         <p className="text-sm text-center mt-4">
           Don't have an account?{' '}
-          <a href="/register" className="text-green-600 hover:underline">
-            Register
-          </a>
+          <Link to="/school-owner-registration" className="text-green-600 hover:underline">
+            Register for School Owners ONLY!
+          </Link>
         </p>
       </div>
     </div>
