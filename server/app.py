@@ -147,3 +147,20 @@ class Home(Resource):
 
 # register the route
 api.add_resource(Home, '/api/home', endpoint='home')
+# api.add_resource(ValidatedSchoolOwnerRegister, '/api/register/owner')
+# api.add_resource(ValidatedAdminCreateStudent, '/api/admin/create-student')
+# api.add_resource(ValidatedAdminCreateEducator, '/api/admin/create-educator')
+# api.add_resource(ValidatedLogin, '/api/login')
+# api.add_resource(ValidatedChangePassword, '/api/change-password')
+# api.add_resource(UserProfile, '/api/profile')
+# api.add_resource(SchoolStats, '/api/admin/stats')
+# # api.add_resource(AssignUserToClass, '/api/admin/assign-class')
+
+
+api.add_resource(Login, '/api/login', endpoint='login')
+api.add_resource(SchoolOwnerRegister, '/api/register/owner', endpoint='register_owner') 
+api.add_resource(AdminCreateStudent, '/api/admin/create-student', endpoint='create_student')
+api.add_resource(AdminCreateEducator, '/api/admin/create-educator', endpoint='create_educator')
+api.add_resource(ChangePassword, '/api/change-password', endpoint='change_password')
+api.add_resource(UserProfile, '/api/profile', endpoint='user_profile')
+api.add_resource(SchoolStats, '/api/admin/stats', endpoint='school_stats')

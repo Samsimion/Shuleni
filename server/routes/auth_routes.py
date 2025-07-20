@@ -42,6 +42,7 @@ class SchoolOwnerRegister(Resource):
             school_id=school.id,
             created_at=datetime.now(timezone.utc)
         )
+        user.password_hash = data['password']
         
         # Update school owner_id
         school.owner_id = user.id
