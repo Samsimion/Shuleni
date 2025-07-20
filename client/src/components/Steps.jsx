@@ -1,5 +1,5 @@
 const Steps = () => (
-  <section className="py-12 px-6 text-center">
+  <section id = "steps" className="py-12 px-6 text-center">
     <h2 className="text-2xl font-semibold mb-2">Easily Create Your Online School Today</h2>
     <p className="text-gray-600 mb-10 max-w-2xl mx-auto">
       Starting your online school is simple and efficient. Follow our step-by-step guide to set up and manage your educational platform.
