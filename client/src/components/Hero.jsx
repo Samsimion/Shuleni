@@ -1,5 +1,8 @@
 const Hero = () => (
-  <section className="flex flex-col md:flex-row items-center justify-between px-8 py-16 bg-white">
+  <section
+    id="home"
+    className="flex flex-col md:flex-row items-center justify-between px-8 py-16 bg-white"
+  >
     <div className="flex-1 md:pr-12">
       <h1 className="text-5xl md:text-6xl font-extrabold text-gray-900 mb-6 leading-tight">
         Welcome to <span className="text-blue-600">Shuleni</span>:<br />
