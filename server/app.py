@@ -3,6 +3,11 @@ from flask import Flask, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api, Resource
 from flask_migrate import Migrate
+
+
+from routes import SchoolListResource, SchoolResource
+
+
 from config import Config
 from marshmallow import ValidationError
 from datetime import timedelta
@@ -147,6 +152,10 @@ class Home(Resource):
 
 # register the route
 api.add_resource(Home, '/api/home', endpoint='home')
+
+api.add_resource(SchoolListResource/ "/schools")
+api.add_resource(SchoolResource, "/schools/<int:id>")
+
 # api.add_resource(ValidatedSchoolOwnerRegister, '/api/register/owner')
 # api.add_resource(ValidatedAdminCreateStudent, '/api/admin/create-student')
 # api.add_resource(ValidatedAdminCreateEducator, '/api/admin/create-educator')
