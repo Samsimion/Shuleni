@@ -153,7 +153,7 @@ class Home(Resource):
 # register the route
 api.add_resource(Home, '/api/home', endpoint='home')
 
-api.add_resource(SchoolListResource/ "/schools")
+api.add_resource(SchoolListResource, "/schools")
 api.add_resource(SchoolResource, "/schools/<int:id>")
 
 # api.add_resource(ValidatedSchoolOwnerRegister, '/api/register/owner')
