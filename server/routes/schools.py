@@ -19,7 +19,7 @@ class SchoolSchema(ma.SQLAlchemySchema):
 school_schema = SchoolSchema(many=True)  
 single_school_schema = SchoolSchema()  
 
-class SchoolResource(Resource):
+class SchoolListResource(Resource):
     def get(self):
         schools = School.query.all()
         return school_schema.dump(schools), 200
@@ -36,5 +36,22 @@ class SchoolResource(Resource):
         new_school = School(name=name, description=description, owner_id=owner_id)
         db.session.add(new_school)
         db.session.commit()
-        return school_schema.dump(new_school), 201      
+
+        return school_schema.dump(new_school), 201  
+
+class SchooReSource(Resource):
+    def get(self, id):
+        school= school.query.get(id)
+        if not school:
+            return {"error": "School not found"}, 404
+        return school_schema.dump(school), 200 
+
+    def patch(self, id):
+        school = School.query.get(id)
+        if not school:
+            return {"erroe": "Schoolnot found"}
+
+        data = request.get_json()
+        if "name"
+
 
