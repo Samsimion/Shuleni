@@ -60,6 +60,15 @@ class SchoolReSource(Resource):
             school_owner_id = data["owner_id"]
 
         db.session.commit()
-        return school_schema.dump(school), 200           
+        return school_schema.dump(school), 200  
+
+    def delete(self, id):
+        school = School.query.get(id)
+        if not school:
+            return {"error": "School not found"}, 404
+
+        db.sessio.delete(school)
+        db.session.commit()
+        return {"message": "School deleted successfully"}                 
 
 

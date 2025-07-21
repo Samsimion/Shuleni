@@ -8,6 +8,8 @@ from flask_cors import CORS
 from flask_bcrypt import Bcrypt
 from flask_marshmallow import Marshmallow
 
+from routes import SchoolListResource, SchoolResource
+
 from config import Config
 
 app = Flask(__name__)
@@ -31,3 +33,4 @@ class Home(Resource):
 
 # register the route
 api.add_resource(Home, '/api/home', endpoint='home')
+
