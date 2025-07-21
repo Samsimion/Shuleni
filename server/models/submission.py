@@ -1,4 +1,4 @@
-from app import db
+from extensions import db
 from sqlalchemy_serializer import SerializerMixin
 from datetime import datetime, timezone
 
@@ -22,7 +22,7 @@ class Submission(db.Model, SerializerMixin):
     'User',
     back_populates='graded_submissions',
     foreign_keys=[graded_by],
-    overlaps="graded_submissions"
+    overlaps="graded_submissions",
 )
 
 
