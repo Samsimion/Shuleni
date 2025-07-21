@@ -39,7 +39,7 @@ class SchoolListResource(Resource):
 
         return school_schema.dump(new_school), 201  
 
-class SchooReSource(Resource):
+class SchoolReSource(Resource):
     def get(self, id):
         school= school.query.get(id)
         if not school:
@@ -49,12 +49,17 @@ class SchooReSource(Resource):
     def patch(self, id):
         school = School.query.get(id)
         if not school:
-            return {"erroe": "Schoolnot found"}
+            return {"error": "Schoolnot found"}
 
         data = request.get_json()
         if "name" in data:
             school.name = data["name"]
         if "description" in data:
-            school.description = data["description"]    
+            school.description = data["description"] 
+        if "owner_id" in data:
+            school_owner_id = data["owner_id"]
+
+        db.session.commit()
+        return school_schema.dump(school), 200           
 
 
