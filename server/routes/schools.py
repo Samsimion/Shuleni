@@ -1,6 +1,6 @@
 from flask_restful import Resource
 from flask import request
-from flask_marshmallow import MarshMallow
+from flask_marshmallow import Marshmallow
 from marshmallow_sqlalchemy import auto_field
 from models.school import School, db
 
@@ -24,7 +24,7 @@ schools_schema = SchoolSchema(many=True)
 class SchoolListResource(Resource):
     def get(self):
         schools = School.query.all()
-        return school_schema.dump(schools), 200
+        return schools_schema.dump(schools), 200
 
     def post(self):
         data = request.get_json()
@@ -46,7 +46,7 @@ class SchoolResource(Resource):
         school= School.query.get(id)
         if not school:
             return {"error": "School not found"}, 404
-        return School_schema.dump(school), 200 
+        return school_schema.dump(school), 200 
 
     def patch(self, id):
         school = School.query.get(id)
