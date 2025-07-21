@@ -32,12 +32,12 @@ class SchoolOwnerRegister(Resource):
         db.session.add(school)
         db.session.flush()  # Get school ID
         
-        
+       
         # Create owner user
         user = User(
             email=data['email'],
             full_name=data['full_name'],
-            password_hash=data['password'],
+            # password_hash=data['password'],
             role='owner',
             school_id=school.id,
             created_at=datetime.now(timezone.utc)
@@ -88,11 +88,12 @@ class AdminCreateStudent(Resource):
         user = User(
             full_name=data['full_name'],
             email=f"{data['admission_number']}@temp.school",  # Temporary email
-            password_hash=temp_password,
+            # password_hash=temp_password,
             role='student',
             school_id=current_user['school_id'],
             created_at=datetime.now(timezone.utc)
         )
+        user.password_hash = temp_password
        
         db.session.add(user)
         db.session.flush()
@@ -154,11 +155,12 @@ class AdminCreateEducator(Resource):
         user = User(
             full_name=data['full_name'],
             email=data['school_email'],
-            password_hash=temp_password,
+            # password_hash=temp_password,
             role='educator',
             school_id=current_user['school_id'],
             created_at=datetime.now(timezone.utc)
         )
+        user.password_hash = temp_password
         
         db.session.add(user)
         db.session.flush()
@@ -261,7 +263,7 @@ class ChangePassword(Resource):
         if not user:
             return {"error": "User not found"}, 404
         
-        if not bcrypt.check_password_hash(user.password_hash, old_password):
+        if not user.authenticate(old_password):
             return {"error": "Invalid old password"}, 401
         
         # Hash new password

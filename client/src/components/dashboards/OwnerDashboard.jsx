@@ -1,7 +1,14 @@
 import React from "react";
 import { FaUserGraduate, FaChalkboardTeacher } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const OwnerDashboard = () => {
+  const navigate = useNavigate()
+
+  function handleRedirect(){
+    navigate('/create-student-registration')
+  }
+
   const ownerName = "Debby Chepkoech";
   const schoolName = "Shuleni Academy";
   const schoolLogo = "/logo.png";
@@ -34,7 +41,7 @@ const OwnerDashboard = () => {
             <button className="block w-full text-left px-3 py-2 rounded text-blue-700 bg-blue-100 font-medium">
               Dashboard
             </button>
-            <button className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
+            <button onClick={handleRedirect} className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
               Manage students
             </button>
             <button className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
