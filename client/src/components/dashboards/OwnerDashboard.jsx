@@ -6,18 +6,23 @@ const OwnerDashboard = () => {
   const schoolName = "Shuleni Academy";
   const schoolLogo = "/logo.png";
   const backgroundImage =
-    "https://images.unsplash.com/photo-1588072432836-e10032774350?auto=format&fit=crop&w=1600&q=80";
+    "https://images.unsplash.com/photo-1596496053841-934f39a4b45c?auto=format&fit=crop&w=1600&q=80";
 
   return (
-    <div
-      className="relative min-h-screen bg-cover bg-center"
-      style={{ backgroundImage: `url(${backgroundImage})` }}
-    >
-      {/* Overlay for subtle effect */}
-      <div className="absolute inset-0 bg-white bg-opacity-80 backdrop-blur-sm z-0"></div>
+    <div className="relative min-h-screen overflow-hidden">
+      {/* Background Image */}
+      <div
+        className="absolute inset-0 z-0 bg-cover bg-center"
+        style={{ backgroundImage: `url(${backgroundImage})` }}
+      ></div>
 
+      {/* Semi-transparent White Overlay */}
+      <div className="absolute inset-0 z-0 bg-white bg-opacity-30 backdrop-blur-sm"></div>
+
+      {/* Main content */}
       <div className="relative z-10 flex min-h-screen">
-        <aside className="w-64 bg-white shadow-md p-6 hidden md:block">
+        {/* Sidebar */}
+        <aside className="w-64 bg-white bg-opacity-90 shadow-md p-6 hidden md:block">
           <div className="flex items-center space-x-3 mb-10">
             <img src={schoolLogo} alt="School Logo" className="w-12 h-12 rounded-full" />
             <div>
@@ -30,20 +35,21 @@ const OwnerDashboard = () => {
               Dashboard
             </button>
             <button className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
-              Students
+              Manage students
             </button>
             <button className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
-              Teachers
+              Manage teachers
             </button>
             <button className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
               Reports
             </button>
             <button className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
-              Settings
+              Profile
             </button>
           </nav>
         </aside>
 
+        {/* Main Panel */}
         <main className="flex-1 p-6">
           {/* Top Bar */}
           <div className="flex justify-between items-center mb-8">
@@ -56,14 +62,14 @@ const OwnerDashboard = () => {
 
           {/* Stat cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6">
-            <div className="bg-white shadow rounded-lg p-5 flex items-center space-x-4">
+            <div className="bg-white bg-opacity-90 shadow rounded-lg p-5 flex items-center space-x-4">
               <FaUserGraduate className="text-blue-500 text-3xl" />
               <div>
                 <p className="text-gray-500">Total Students</p>
                 <h3 className="text-xl font-semibold text-gray-800">1,245</h3>
               </div>
             </div>
-            <div className="bg-white shadow rounded-lg p-5 flex items-center space-x-4">
+            <div className="bg-white bg-opacity-90 shadow rounded-lg p-5 flex items-center space-x-4">
               <FaChalkboardTeacher className="text-green-500 text-3xl" />
               <div>
                 <p className="text-gray-500">Total Teachers</p>
@@ -75,7 +81,7 @@ const OwnerDashboard = () => {
           {/* Recent Activity */}
           <section className="mt-10">
             <h2 className="text-lg font-bold text-gray-800 mb-4">Recent Activity</h2>
-            <div className="bg-white shadow rounded-lg p-4 text-gray-600">
+            <div className="bg-white bg-opacity-90 shadow rounded-lg p-4 text-gray-600">
               <ul className="space-y-2">
                 <li>📌 Monthly staff meeting scheduled</li>
                 <li>💡 System update planned for next week</li>
