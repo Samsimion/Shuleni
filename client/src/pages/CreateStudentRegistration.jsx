@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { User, Hash, BookOpen, School } from 'lucide-react';
 import axios from '../api/axios';
-import AdminNavbar from '../components/AdminNavbar';
 
 const CreateStudentRegistration = ({ onSuccess }) => {
   const [formData, setFormData] = useState({
