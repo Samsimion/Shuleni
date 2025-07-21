@@ -10,7 +10,6 @@ import CreateStudentRegistration from './pages/CreateStudentRegistration';
 import CreateEducatorRegistration from './pages/CreateEducatorRegistration';
 import ChangePassword from './pages/ChangePassword';
 import SchoolStats from './pages/SchoolStats';
-import AdminDashboard from './pages/AdminDashboard';
 import Unauthorized from './pages/Unauthorized';
 
 import useAuth from './hooks/useAuth';
@@ -55,14 +54,6 @@ export const AppRoutes = () => {
       </Route>
 
       {/* 🔐 Owner-only routes */}
-      <Route
-        path="/admin-dashboard"
-        element={
-          <ProtectedRoute allowedRoles={['owner']}>
-            <AdminDashboard />
-          </ProtectedRoute>
-        }
-      />
 
       <Route
         path="/create-student-registration"
