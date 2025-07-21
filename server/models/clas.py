@@ -21,13 +21,13 @@ class Class(db.Model, SerializerMixin):
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
 
     school = db.relationship('School', back_populates='classes')
-    members = db.relationship('ClassMember', back_populates='class_', cascade='all, delete-orphan')
+    members = db.relationship('ClassMember', back_populates='class_', cascade='all, delete-orphan',single_parent=True)
     resources = db.relationship('Resource', back_populates='class_')
-    assessments = db.relationship('Assessment', back_populates='class_')
-    attendance_records = db.relationship('Attendance', back_populates='class_')
-    messages = db.relationship('Chat', back_populates='class_')
+    assessments = db.relationship('Assessment', back_populates='class_', cascade='all, delete-orphan')
+    attendance_records = db.relationship('Attendance', back_populates='class_', cascade='all, delete-orphan')
+    messages = db.relationship('Chat', back_populates='class_', cascade='all, delete-orphan')
     students = db.relationship("Student", back_populates="class_", cascade='all, delete-orphan')
-
+    #
 
     #teachers = db.relationship(
     #"User",

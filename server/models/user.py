@@ -13,7 +13,7 @@ class User(db.Model, SerializerMixin):
     email = db.Column(db.String(120), unique=True, nullable=False)
     _password_hash = db.Column(db.String(255), nullable=False)
     role = db.Column(db.Enum('owner', 'educator', 'student', name='user_roles'), nullable=False)
-    school_id = db.Column(db.Integer, db.ForeignKey('schools.id'), nullable=False)
+    school_id = db.Column(db.Integer, db.ForeignKey('schools.id'), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
 
 
@@ -21,21 +21,17 @@ class User(db.Model, SerializerMixin):
     
 
     class_memberships = db.relationship('ClassMember', back_populates='user', cascade='all, delete-orphan')
-    attendances = db.relationship('Attendance', back_populates='student', foreign_keys='Attendance.student_id')
-    marked_attendance = db.relationship('Attendance', back_populates='educator', foreign_keys='Attendance.educator_id')
-    uploaded_resources = db.relationship('Resource', back_populates='uploader')
-    assessments_created = db.relationship('Assessment', back_populates='creator')
-    submissions = db.relationship('Submission', back_populates='student', foreign_keys='Submission.student_id')
-    graded_submissions = db.relationship(
-    'Submission',
-    back_populates='grader',
-    foreign_keys='Submission.graded_by'
-)
-    student_profile = db.relationship("Student", back_populates="user", uselist=False)
-    
-    messages = db.relationship('Chat', back_populates='sender')
+    attendances = db.relationship('Attendance', back_populates='student', foreign_keys='Attendance.student_id', cascade='all, delete-orphan')
+    marked_attendance = db.relationship('Attendance', back_populates='educator', foreign_keys='Attendance.educator_id', cascade='all, delete-orphan')
+    uploaded_resources = db.relationship('Resource', back_populates='uploader', cascade='all, delete-orphan')
+    assessments_created = db.relationship('Assessment', back_populates='creator', cascade='all, delete-orphan')
+    submissions = db.relationship('Submission', back_populates='student', foreign_keys='Submission.student_id', cascade='all, delete-orphan')
+    graded_submissions = db.relationship('Submission', back_populates='grader',foreign_keys='Submission.graded_by')
+    student_profile = db.relationship("Student", back_populates="user", uselist=False, cascade='all, delete-orphan', single_parent=True)
 
-    serialize_rules = ('-password_hash', '-school.users', '-class_memberships.user', '-attendances.student', '-marked_attendance.educator')
+    messages = db.relationship('Chat', back_populates='sender', cascade='all, delete-orphan')
+
+    serialize_rules = ('-password_hash','-school.users','-class_memberships.user', '-attendances.student', '-marked_attendance.educator')
 
 
     def __repr__(self):
