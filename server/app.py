@@ -5,7 +5,7 @@ from flask_restful import Api, Resource
 from flask_migrate import Migrate
 
 
-from routes import SchoolListResource, SchoolResource
+from routes.schools import SchoolListResource, SchoolResource
 
 
 from config import Config
