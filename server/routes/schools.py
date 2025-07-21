@@ -1,4 +1,5 @@
 from flask_restful import Resource
+fromflask import request
 from flask_marshmallow import MarshMallow
 from marshmallow_sqlalchemy import auto_field
 from models.school import School, db
