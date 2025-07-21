@@ -22,7 +22,7 @@ class Submission(db.Model, SerializerMixin):
     'User',
     back_populates='graded_submissions',
     foreign_keys=[graded_by],
-    overlaps="graded_submissions"
+    overlaps="graded_submissions",
 )
 
 

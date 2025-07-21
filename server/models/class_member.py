@@ -16,7 +16,7 @@ class ClassMember(db.Model, SerializerMixin):
     joined_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))
 
     class_ = db.relationship('Class', back_populates='members')
-    user = db.relationship('User', back_populates='class_memberships')
+    user = db.relationship('User', back_populates='class_memberships',cascade='all, delete-orphan', single_parent=True)
 
     serialize_rules = ('-class_.members', '-user.class_memberships',)
 

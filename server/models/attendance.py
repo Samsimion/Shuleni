@@ -4,6 +4,7 @@ from sqlalchemy_serializer import SerializerMixin
 
 
 class Attendance(db.Model, SerializerMixin):
+    __tablename__ = 'attendances'
     __table_args__ = (db.UniqueConstraint('class_id', 'student_id', 'date', name='uix_attendance'),) #nimewekaa hii hapa usiitoe its for making sure a student isnt marked twice
 
 

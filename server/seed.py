@@ -1,23 +1,37 @@
 from app import app
 from extensions import db
-from models import School, User, Student, Teacher
+from models import (
+    School, User, Student, Teacher, Class, ClassMember,
+    Attendance, Chat, ResourceModel, Assessment, Submission
+)
+from werkzeug.security import generate_password_hash
 from sqlalchemy import text
+from datetime import date, datetime, timedelta, timezone
 
 def seed_data():
     print("🔁 Resetting database...")
-    
-    # Drop all tables
+
+    # Drop all tables manually (be cautious with production!)
     db.session.execute(text("DROP TABLE IF EXISTS chats CASCADE"))
     db.session.execute(text("DROP TABLE IF EXISTS resources CASCADE"))
     db.session.execute(text("DROP TABLE IF EXISTS messages CASCADE"))
     db.session.execute(text("DROP TABLE IF EXISTS assessments CASCADE"))
     db.session.execute(text("DROP TABLE IF EXISTS attendances CASCADE"))
+    db.session.execute(text("DROP TABLE IF EXISTS class_members CASCADE"))
+    db.session.execute(text("DROP TABLE IF EXISTS classes CASCADE"))
     db.session.execute(text("DROP TABLE IF EXISTS students CASCADE"))
     db.session.execute(text("DROP TABLE IF EXISTS teachers CASCADE"))
     db.session.execute(text("DROP TABLE IF EXISTS users CASCADE"))
     db.session.execute(text("DROP TABLE IF EXISTS schools CASCADE"))
     db.session.commit()
 
+    print("🏫 Creating school...")
+    school = School(name="Shuleni High")
+    # if i upgrade address school = School(name="Shuleni High", address="123 Main Street")
+    db.session.add(school)
+    db.session.commit()
+
+    print("👑 Creating owner...")
     owner = User(
         full_name="Samuel Owner",
         email="owner@shuleni.com",
@@ -28,7 +42,6 @@ def seed_data():
     db.session.add(owner)
     db.session.commit()
 
-    # --- Create Educators ---
     print("👨‍🏫 Creating educators...")
     educators = []
     for i in range(1, 3):
@@ -43,7 +56,6 @@ def seed_data():
     db.session.add_all(educators)
     db.session.commit()
 
-    # --- Create Students ---
     print("👩‍🎓 Creating students...")
     students = []
     for i in range(1, 6):
@@ -58,23 +70,19 @@ def seed_data():
     db.session.add_all(students)
     db.session.commit()
 
-    # --- Create Classes ---
     print("🏫 Creating classes...")
     class_a = Class(name="Form 1A", school_id=school.id, created_by=owner.id)
     class_b = Class(name="Form 2B", school_id=school.id, created_by=owner.id)
     db.session.add_all([class_a, class_b])
     db.session.commit()
 
-    # --- Class Members ---
-    print("👥 Adding members to classes...")
+    print("👥 Assigning class members...")
     class_members = []
 
-    # Add educators to both classes
     for educator in educators:
         class_members.append(ClassMember(class_id=class_a.id, user_id=educator.id, role_in_class="educator"))
         class_members.append(ClassMember(class_id=class_b.id, user_id=educator.id, role_in_class="educator"))
 
-    # Add half students to class A, half to class B
     for idx, student in enumerate(students):
         target_class = class_a if idx < 3 else class_b
         class_members.append(ClassMember(class_id=target_class.id, user_id=student.id, role_in_class="student"))
@@ -82,12 +90,11 @@ def seed_data():
     db.session.add_all(class_members)
     db.session.commit()
 
-    # --- Add Resources ---
     print("📚 Uploading resources...")
     res1 = ResourceModel(
         title="Algebra Basics",
         description="Grade 9 math notes",
-        type="files",
+        type="files",  # Ensure enum accepts 'files'
         file_url="https://example.com/algebra.pdf",
         uploaded_by=educators[0].id,
         class_id=class_a.id
@@ -95,7 +102,7 @@ def seed_data():
     res2 = ResourceModel(
         title="Photosynthesis Video",
         description="Biology lesson",
-        type="video",
+        type="video",  # Ensure enum accepts 'video'
         file_url="https://example.com/bio.mp4",
         uploaded_by=educators[1].id,
         class_id=class_b.id
@@ -103,8 +110,7 @@ def seed_data():
     db.session.add_all([res1, res2])
     db.session.commit()
 
-    # --- Attendance Records ---
-    print("📆 Adding attendance...")
+    print("📆 Adding attendance records...")
     today = date.today()
     attendance_records = []
     for student in students:
@@ -116,18 +122,17 @@ def seed_data():
                 student_id=student.id,
                 educator_id=educator.id,
                 date=today,
-                status="present"
+                status="present"  # Ensure this matches the enum AttendanceStatus
             )
         )
     db.session.add_all(attendance_records)
     db.session.commit()
 
-    # --- Assessments ---
     print("📝 Creating assessments...")
     assess1 = Assessment(
         title="Math Quiz 1",
         description="Basic algebra skills",
-        type="quiz",
+        type="quiz",  # Ensure your model supports this type
         class_id=class_a.id,
         created_by=educators[0].id,
         duration_minutes=30,
@@ -140,7 +145,6 @@ def seed_data():
     db.session.add(assess1)
     db.session.commit()
 
-    # --- Submissions ---
     print("✅ Submitting assessment...")
     sub1 = Submission(
         assessment_id=assess1.id,
@@ -152,7 +156,6 @@ def seed_data():
     db.session.add(sub1)
     db.session.commit()
 
-    # --- Chat Messages ---
     print("💬 Adding chat messages...")
     msg1 = Chat(
         class_id=class_a.id,
@@ -168,3 +171,7 @@ def seed_data():
     db.session.commit()
 
     print("✅ Done seeding Shuleni database!")
+
+if __name__ == "__main__":
+    with app.app_context():
+        seed_data()

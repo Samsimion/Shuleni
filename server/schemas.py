@@ -48,13 +48,13 @@ class SchoolOwnerRegistrationSchema(Schema):
     email = fields.Email(required=True)
     password = fields.String(required=True, validate=validate.Length(min=6))
     school_name = fields.String(required=True, validate=validate.Length(min=2, max=120))
-    description = fields.String(missing='', validate=validate.Length(max=500))
+    description = fields.String(load_default='', validate=validate.Length(max=500))
 
 class StudentCreationSchema(Schema):
     full_name = fields.String(required=True, validate=validate.Length(min=2, max=120))
     admission_number = fields.String(required=True, validate=validate.Length(min=1, max=50))
     grade = fields.String(required=True, validate=validate.Length(min=1, max=20))
-    class_id = fields.Integer(missing=None, allow_none=True)
+    class_id = fields.Integer(load_default=None, allow_none=True)
     
     @validates_schema
     def validate_admission_number(self, data, **kwargs):
@@ -67,7 +67,7 @@ class EducatorCreationSchema(Schema):
     full_name = fields.String(required=True, validate=validate.Length(min=2, max=120))
     school_email = fields.Email(required=True)
     tsc_number = fields.String(required=True, validate=validate.Length(min=1, max=100))
-    class_id = fields.Integer(missing=None, allow_none=True)
+    class_id = fields.Integer(load_default=None, allow_none=True)
     
     @validates_schema
     def validate_school_email(self, data, **kwargs):

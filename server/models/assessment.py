@@ -20,7 +20,7 @@ class Assessment(db.Model, SerializerMixin):
 
     class_ = db.relationship('Class', back_populates='assessments')
     creator = db.relationship('User', back_populates='assessments_created')
-    submissions = db.relationship('Submission', back_populates='assessment')
+    submissions = db.relationship('Submission', back_populates='assessment', cascade='all, delete-orphan')
 
     serialize_rules = ('-class_.assessments', '-creator.assessments_created', '-submissions.assessment')
 
