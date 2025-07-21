@@ -1,43 +1,33 @@
-import { useNavigate } from 'react-router-dom';
-import Hero from "../components/Hero";
-import Features from "../components/Features";
-import Steps from "../components/Steps";
-import ContactForm from "../components/ContactForm";
+import React from 'react';
+import Hero from '../components/landing/Hero';
+import Features from '../components/landing/Features';
+import Steps from '../components/landing/Steps';
+import Contact from '../components/landing/ContactForm';
 
-function LandingPage() {
-  const navigate = useNavigate();
+export default function LandingPage() {
 
   return (
     <div>
       <header className="flex items-center justify-between p-4 border-b">
         <img src="/logo.png" alt="Shuleni Logo" className="w-20 h-20" />
-        <h1 className="text-2xl font-bold text-blue-600">Shuleni</h1>
+
+        <nav className="space-x-4 text-sm font-medium">
+          <a href="#home" className="hover:text-blue-500">Home</a>
+          <a href="#services" className="hover:text-blue-500">Services</a>
+          <a href="#features" className="hover:text-blue-500">Features</a>
+          <a href="#contact" className="hover:text-blue-500">Contact Us</a>
+          <a href="#" className="bg-black text-white px-4 py-2 rounded hover:bg-blue-600">Get Started</a>
+        </nav>
+
       </header>
 
       <main>
         <Hero />
         <Features />
         <Steps />
-        <ContactForm />
+        <Contact />
       </main>
 
-      <div className="text-center my-6">
-        <p className="mb-2 font-medium">Create an account (For School Owners ONLY!)</p>
-        <button
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 mr-4"
-          onClick={() => navigate('/school-owner-registration')}
-        >
-          Register
-        </button>
-
-        <p className="mt-4 mb-2 font-medium">Already have an account?</p>
-        <button
-          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-          onClick={() => navigate('/login')}
-        >
-          Sign In
-        </button>
-      </div>
 
       <footer className="text-center text-sm py-6 bg-gray-100">
         © 2025 Shuleni. All rights reserved.
@@ -46,4 +36,4 @@ function LandingPage() {
   );
 }
 
-export default LandingPage;
+
