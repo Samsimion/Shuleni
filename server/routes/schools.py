@@ -52,6 +52,9 @@ class SchooReSource(Resource):
             return {"erroe": "Schoolnot found"}
 
         data = request.get_json()
-        if "name"
+        if "name" in data:
+            school.name = data["name"]
+        if "description" in data:
+            school.description = data["description"]    
 
 
