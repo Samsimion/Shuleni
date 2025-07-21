@@ -50,12 +50,21 @@ export const AppRoutes = () => {
       {/* 🌐 Public Pages */}
       <Route element={<PublicLayout />}>
         <Route path="/login" element={<Login />} />
-        <Route path="/owner-dashboard" element={<OwnerPage />} />
         <Route path="/school-owner-registration" element={<SchoolOwnerRegistration />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
       </Route>
 
       {/* 🔐 Owner-only routes */}
+      
+      <Route
+        path="/owner-dashboard"
+        element={
+          <ProtectedRoute allowedRoles={['owner']}>
+            <OwnerPage />
+          </ProtectedRoute>
+        }
+      />
+      
       
       
 
