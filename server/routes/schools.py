@@ -1,9 +1,11 @@
 from flask_restful import Resource
-fromflask import request
+from flask import request
 from flask_marshmallow import MarshMallow
 from marshmallow_sqlalchemy import auto_field
 from models.school import School, db
 
+
+ma = Marshmallow()
 
 class SchoolSchema(ma.SQLAlchemySchema):
     class Meta:
@@ -16,8 +18,8 @@ class SchoolSchema(ma.SQLAlchemySchema):
     created_at = auto_field()
     owner_id = auto_field()
 
-school_schema = SchoolSchema(many=True)  
-single_school_schema = SchoolSchema()  
+school_schema = SchoolSchema()  
+schools_schema = SchoolSchema(many=True)  
 
 class SchoolListResource(Resource):
     def get(self):
@@ -41,7 +43,7 @@ class SchoolListResource(Resource):
 
 class SchoolReSource(Resource):
     def get(self, id):
-        school= school.query.get(id)
+        school= School.query.get(id)
         if not school:
             return {"error": "School not found"}, 404
         return school_schema.dump(school), 200 
@@ -49,7 +51,7 @@ class SchoolReSource(Resource):
     def patch(self, id):
         school = School.query.get(id)
         if not school:
-            return {"error": "Schoolnot found"}
+            return {"error": "School not found"}, 404
 
         data = request.get_json()
         if "name" in data:
@@ -67,7 +69,7 @@ class SchoolReSource(Resource):
         if not school:
             return {"error": "School not found"}, 404
 
-        db.sessio.delete(school)
+        db.session.delete(school)
         db.session.commit()
         return {"message": "School deleted successfully"}                 
 
