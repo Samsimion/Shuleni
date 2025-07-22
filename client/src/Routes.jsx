@@ -4,14 +4,14 @@ import ProtectedRoute from './layouts/ProtectedRoute';
 
 import SchoolOwnerRegistration from './pages/SchoolOwnerRegistration';
 import Login from './pages/Login';
-import { UserProfilePage } from './pages/UserProfilePage';
+import UserProfilePage from './pages/UserProfilePage';
 import LandingPage from './pages/LandingPage';
 import CreateStudentRegistration from './pages/CreateStudentRegistration';
 import CreateEducatorRegistration from './pages/CreateEducatorRegistration';
 import ChangePassword from './pages/ChangePassword';
 import SchoolStats from './pages/SchoolStats';
-import AdminDashboard from './pages/AdminDashboard';
 import Unauthorized from './pages/Unauthorized';
+import OwnerPage from './pages/OwnerPage';
 
 import useAuth from './hooks/useAuth';
 
@@ -52,17 +52,22 @@ export const AppRoutes = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/school-owner-registration" element={<SchoolOwnerRegistration />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
+        <Route path="/user-profile" element={<UserProfilePage/>}/>
       </Route>
 
       {/* 🔐 Owner-only routes */}
+      
       <Route
-        path="/admin-dashboard"
+        path="/owner-dashboard"
         element={
           <ProtectedRoute allowedRoles={['owner']}>
-            <AdminDashboard />
+            <OwnerPage />
           </ProtectedRoute>
         }
       />
+      
+      
+      
 
       <Route
         path="/create-student-registration"
@@ -71,6 +76,7 @@ export const AppRoutes = () => {
             <CreateStudentRegistration />
           </ProtectedRoute>
         }
+        
       />
 
       <Route

@@ -3,8 +3,18 @@ import Hero from '../components/landing/Hero';
 import Features from '../components/landing/Features';
 import Steps from '../components/landing/Steps';
 import Contact from '../components/landing/ContactForm';
+import { useNavigate } from 'react-router-dom';
 
-export default function LandingPage() {
+function LandingPage() {
+    const navigate = useNavigate()
+
+    function handleLogin(){
+        navigate('/login')
+    }
+
+    function handleregistration(){
+        navigate("/school-owner-registration")
+    } 
 
   return (
     <div>
@@ -16,7 +26,8 @@ export default function LandingPage() {
           <a href="#services" className="hover:text-blue-500">Services</a>
           <a href="#features" className="hover:text-blue-500">Features</a>
           <a href="#contact" className="hover:text-blue-500">Contact Us</a>
-          <a href="#" className="bg-black text-white px-4 py-2 rounded hover:bg-blue-600">Get Started</a>
+          <button onClick={handleregistration} className="bg-black text-white px-4 py-2 rounded hover:bg-blue-600">Get Started</button>
+          <button onClick={handleLogin} className="bg-black text-white px-4 py-2 rounded hover:bg-blue-600">Login</button>
         </nav>
 
       </header>
@@ -35,5 +46,7 @@ export default function LandingPage() {
     </div>
   );
 }
+
+export default LandingPage
 
 
