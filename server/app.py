@@ -31,7 +31,7 @@ from routes.auth_routes import SchoolOwnerRegister, AdminCreateEducator, AdminCr
 from schemas import SchoolOwnerRegistrationSchema, StudentCreationSchema, EducatorCreationSchema, LoginSchema, ChangePasswordSchema, UserProfileResponseSchema, AuthResponseSchema, UserCreationResponseSchema
 from routes.school_stats import SchoolStats
 from routes.schools import SchoolListResource, SchoolResource
-from routes.student_route import StudentListResource, StudentResource
+
 
 
 # import models
@@ -157,10 +157,7 @@ api.add_resource(Home, '/api/home', endpoint='home')
 
 api.add_resource(SchoolListResource, "/api/schools")
 api.add_resource(SchoolResource, "/api/schools/<int:id>")
-api.add_resource(StudentListResource, "/api/students")
-api.add_resource(StudentResource, "/api/students/<int:student_id>")
-api.add_resource(SchoolListResource, "/schools")
-api.add_resource(SchoolResource, "/schools/<int:id>")
+
 
 
 # api.add_resource(ValidatedSchoolOwnerRegister, '/api/register/owner')
