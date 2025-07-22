@@ -26,20 +26,7 @@ class SchoolListResource(Resource):
         schools = School.query.all()
         return schools_schema.dump(schools), 200
 
-    def post(self):
-        data = request.get_json()
-        name = data.get("name")
-        description = data.get("description")
-        owner_id = data.get("owner_id")  
-
-        if not name:
-            return {"error": "School name is required"}, 400
-
-        new_school = School(name=name, description=description, owner_id=owner_id)
-        db.session.add(new_school)
-        db.session.commit()
-
-        return school_schema.dump(new_school), 201  
+     
 
 class SchoolResource(Resource):
     def get(self, id):
