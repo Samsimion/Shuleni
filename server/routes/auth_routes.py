@@ -32,12 +32,11 @@ class SchoolOwnerRegister(Resource):
         db.session.add(school)
         db.session.flush()  # Get school ID
         
-       
+      
         # Create owner user
         user = User(
             email=data['email'],
             full_name=data['full_name'],
-            # password_hash=data['password'],
             role='owner',
             school_id=school.id,
             created_at=datetime.now(timezone.utc)
@@ -87,8 +86,7 @@ class AdminCreateStudent(Resource):
         # Create user account
         user = User(
             full_name=data['full_name'],
-            email=f"{data['admission_number']}@temp.school",  # Temporary email
-            # password_hash=temp_password,
+            email=f"{data['admission_number']}@gmail.com",  # Temporary email
             role='student',
             school_id=current_user['school_id'],
             created_at=datetime.now(timezone.utc)
@@ -155,7 +153,6 @@ class AdminCreateEducator(Resource):
         user = User(
             full_name=data['full_name'],
             email=data['school_email'],
-            # password_hash=temp_password,
             role='educator',
             school_id=current_user['school_id'],
             created_at=datetime.now(timezone.utc)
