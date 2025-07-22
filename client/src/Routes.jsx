@@ -12,8 +12,9 @@ import ChangePassword from './pages/ChangePassword';
 import SchoolStats from './pages/SchoolStats';
 import Unauthorized from './pages/Unauthorized';
 import OwnerPage from './pages/OwnerPage';
-
+import StudentDashboard from './components/dashboards/StudentDashboard';
 import useAuth from './hooks/useAuth';
+
 
 export const AppRoutes = () => {
   const { user, loading } = useAuth();
@@ -52,7 +53,10 @@ export const AppRoutes = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/school-owner-registration" element={<SchoolOwnerRegistration />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
-        <Route path="/user-profile" element={<UserProfilePage/>}/>
+        <Route path="/student-dashboard" element={<StudentDashboard />} />
+
+    
+
       </Route>
 
       {/* 🔐 Owner-only routes */}
@@ -66,8 +70,7 @@ export const AppRoutes = () => {
         }
       />
       
-      
-      
+    
 
       <Route
         path="/create-student-registration"
@@ -96,6 +99,8 @@ export const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
+       
+     
 
       {/* 🔐 Shared routes: owner, educator, student */}
       <Route
