@@ -8,6 +8,7 @@ class Submission(db.Model, SerializerMixin):
     __tablename__ = 'submissions'
 
     id = db.Column(db.Integer, primary_key=True)
+    
     assessment_id = db.Column(db.Integer, db.ForeignKey('assessments.id'), nullable=False)
     student_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     submitted_at = db.Column(db.DateTime, default=datetime.now(timezone.utc))

@@ -2,13 +2,26 @@
 from flask_restful import Resource
 from flask import request, make_response
 from models.submission import Submission, db
-from schemas.submission_schema import submission_schema, submissions_schema
+from models.schemas.submission_schema import submission_schema, submissions_schema
 
 class Submissions(Resource):
     def get(self):
         submissions = Submission.query.all()
         return make_response(submissions_schema.dump(submissions), 200)
-
+    def post(self):
+        data = request.get_json()
+        print("SUBMISSION PAYLOAD:", data)  # 👈 shows in console
+        try:
+            new = Submission(**data)
+            db.session.add(new)
+            db.session.commit()
+            return make_response(submission_schema.dump(new), 201)
+        except Exception as e:
+            print("SUBMISSION ERROR:", str(e))  # 👈 this will show real issue
+            return make_response(
+                {"error": "Submission failed", "details": str(e)},
+                500
+            )
     def post(self):
         data = request.get_json()
         new = Submission(**data)

@@ -14,6 +14,7 @@ import AdminDashboard from './pages/AdminDashboard';
 import Unauthorized from './pages/Unauthorized';
 
 import useAuth from './hooks/useAuth';
+import AssessmentsPage from './pages/AssessmentsPage';
 
 export const AppRoutes = () => {
   const { user, loading } = useAuth();
@@ -52,6 +53,7 @@ export const AppRoutes = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/school-owner-registration" element={<SchoolOwnerRegistration />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
+        <Route path="/assessments" element={<AssessmentsPage />} />
       </Route>
 
       {/* 🔐 Owner-only routes */}

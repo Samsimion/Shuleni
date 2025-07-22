@@ -2,7 +2,7 @@
 from flask_restful import Resource
 from flask import request, make_response
 from models.assessment import Assessment, db
-from schemas.assessment_schema import assessment_schema, assessments_schema
+from models.schemas.assessment_schema import assessment_schema, assessments_schema
 
 class Assessments(Resource):
     def get(self):
