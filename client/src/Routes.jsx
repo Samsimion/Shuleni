@@ -4,7 +4,7 @@ import ProtectedRoute from './layouts/ProtectedRoute';
 
 import SchoolOwnerRegistration from './pages/SchoolOwnerRegistration';
 import Login from './pages/Login';
-import { UserProfilePage } from './pages/UserProfilePage';
+import UserProfilePage from './pages/UserProfilePage';
 import LandingPage from './pages/LandingPage';
 import CreateStudentRegistration from './pages/CreateStudentRegistration';
 import CreateEducatorRegistration from './pages/CreateEducatorRegistration';
@@ -52,6 +52,7 @@ export const AppRoutes = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/school-owner-registration" element={<SchoolOwnerRegistration />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
+        <Route path="/user-profile" element={<UserProfilePage/>}/>
       </Route>
 
       {/* 🔐 Owner-only routes */}

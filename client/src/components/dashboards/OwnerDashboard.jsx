@@ -1,6 +1,5 @@
 import React from "react";
 
-import { FaUserGraduate, FaChalkboardTeacher } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { FaUserGraduate, FaChalkboardTeacher, FaClipboardList, FaPlusCircle, FaChartBar, FaCalendarAlt, FaBuilding, FaEdit, FaTrash } from "react-icons/fa";
 
@@ -111,11 +110,11 @@ const OwnerDashboard = () => {
           <section className="mb-8">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">Quick Actions</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <button className="bg-blue-700 text-white p-4 rounded-lg shadow-md hover:bg-blue-800 flex items-center justify-center space-x-2">
+                <button onClick={handleRedirect} className="bg-blue-700 text-white p-4 rounded-lg shadow-md hover:bg-blue-800 flex items-center justify-center space-x-2">
                     <FaPlusCircle className="text-2xl" />
                     <span>Add New Student</span>
                 </button>
-                <button className="bg-green-700 text-white p-4 rounded-lg shadow-md hover:bg-green-800 flex items-center justify-center space-x-2">
+                <button onClick={CreateEducatorRedirect} className="bg-green-700 text-white p-4 rounded-lg shadow-md hover:bg-green-800 flex items-center justify-center space-x-2">
                     <FaChalkboardTeacher className="text-2xl" />
                     <span>Add New Teacher</span>
                 </button>
