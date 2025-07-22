@@ -28,6 +28,7 @@ from routes.auth_routes import SchoolOwnerRegister, AdminCreateEducator, AdminCr
 from schemas import SchoolOwnerRegistrationSchema, StudentCreationSchema, EducatorCreationSchema, LoginSchema, ChangePasswordSchema, UserProfileResponseSchema, AuthResponseSchema, UserCreationResponseSchema
 from routes.school_stats import SchoolStats
 from routes.attendance_route import AttendanceById, Attendances
+from routes.clas_routes import ClassList,ClassById
 
 # import models
 from models import *
@@ -167,3 +168,6 @@ api.add_resource(UserProfile, '/api/profile', endpoint='user_profile')
 api.add_resource(SchoolStats, '/api/admin/stats', endpoint='school_stats')
 api.add_resource(Attendances, "/attendances", endpoint="attendances_list")
 api.add_resource(AttendanceById ,"/attendances/<int:id>", endpoint="attendance_detail")
+api.add_resource(ClassList,"/classes",endpoint="class_list")
+api.add_resource(ClassById, "/classes/<int:id>", endpoint="attendance_detail")
+
