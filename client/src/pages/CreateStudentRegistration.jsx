@@ -16,11 +16,16 @@ const CreateStudentRegistration = ({ onSuccess }) => {
 
   
   const [isLoading, setIsLoading] = useState(false);
+  // const [studentCreated, setStudentCreated] = useState(null)
   const navigate = useNavigate();
 
 
   function DashboardRedirect(){
     navigate('/owner-dashboard')
+  }
+
+  function EducatorRedirect(){
+    navigate('/create-educator-registration')
   }
 
 
@@ -30,18 +35,40 @@ const CreateStudentRegistration = ({ onSuccess }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    
+    const cleanFormData = {
+    ...formData,
+    class_id: formData.class_id === '' ? null : parseInt(formData.class_id, 10),
+    grade: formData.grade === '' ? null : formData.grade,
+  };
+
+
 
     try {
-      await axios.post('/admin/create-student', formData, {
+      const response = await axios.post('/admin/create-student', cleanFormData, {
         withCredentials: true, // needed if using cookies for JWT
       });
 
-      alert('Student created successfully!');
+      // Capture the data returned from the server
+      const { message, admission_number, temporary_password, student_id } = response.data;
+      
+      // Display the important information to the user
+      alert(`${message}\n\nAdmission Number: ${admission_number}\nTemporary Password: ${temporary_password}\nStudent ID: ${student_id}`);
+      
+      // You could also store this data in state if you want to display it in the UI
+      console.log('Student created:', {
+        message,
+        admission_number,
+        temporary_password,
+        student_id
+      });
+
+
       setFormData({
         full_name: '',
         admission_number: '',
-        grade: '',
-        class_id: '',
+        grade: '', 
+        class_id: null,
       });
 
       onSuccess?.();
@@ -49,7 +76,7 @@ const CreateStudentRegistration = ({ onSuccess }) => {
       console.error(err);
       alert(err?.response?.data?.error || 'Student creation failed');
     } finally {
-      navigate('/');  
+      navigate('/owner-dashboard');  
       setIsLoading(false);
     }
   };
@@ -74,7 +101,7 @@ const CreateStudentRegistration = ({ onSuccess }) => {
             <button className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
               Manage students
             </button>
-            <button className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
+            <button onClick={EducatorRedirect} className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
               Manage teachers
             </button>
             <button className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">

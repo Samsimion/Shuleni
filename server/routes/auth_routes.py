@@ -95,13 +95,13 @@ class AdminCreateStudent(Resource):
        
         db.session.add(user)
         db.session.flush()
-        
+       
         # Create student profile
         student = Student(
             user_id=user.id,
             school_id=current_user['school_id'],
             admission_number=data['admission_number'],
-            grade=data['grade'], # Optional - can be None initially
+            grade=data.get('grade'), # Optional - can be None initially
             class_id=data.get('class_id'), # Optional - can be None initially
             created_at=datetime.now(timezone.utc)
         )

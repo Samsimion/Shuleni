@@ -9,6 +9,10 @@ const OwnerDashboard = () => {
     navigate('/create-student-registration')
   }
 
+  function CreateEducatorRedirect(){
+    navigate('/create-educator-registration')
+  }
+
   const ownerName = "Debby Chepkoech";
   const schoolName = "Shuleni Academy";
   const schoolLogo = "/logo.png";
@@ -44,7 +48,7 @@ const OwnerDashboard = () => {
             <button onClick={handleRedirect} className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
               Manage students
             </button>
-            <button className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
+            <button onClick={CreateEducatorRedirect} className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
               Manage teachers
             </button>
             <button className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
