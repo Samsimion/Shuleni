@@ -1,5 +1,6 @@
 import React from "react";
 
+
 import { useNavigate } from "react-router-dom";
 import { FaUserGraduate, FaChalkboardTeacher, FaClipboardList, FaPlusCircle, FaChartBar, FaCalendarAlt, FaBuilding, FaEdit, FaTrash } from "react-icons/fa";
 
@@ -13,6 +14,10 @@ const OwnerDashboard = () => {
 
   function CreateEducatorRedirect(){
     navigate('/create-educator-registration')
+  }
+
+  function handleLogout(){
+    navigate('/')
   }
 
   const ownerName = "Debby Chepkoech";
@@ -78,7 +83,7 @@ const OwnerDashboard = () => {
             <button className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
               Profile
             </button>
-            <button className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
+            <button onClick={handleLogout} className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
               Log out
             </button>
 
