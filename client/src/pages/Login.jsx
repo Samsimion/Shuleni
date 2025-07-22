@@ -28,7 +28,7 @@ const Login = () => {
 
 
     if (userRole === 'owner') {
-      navigate('/admin-dashboard');
+      navigate('/owner-dashboard');
     } else if (userRole === 'educator') {
       navigate('/educator-dashboard');
     } else if (userRole === 'student') {
