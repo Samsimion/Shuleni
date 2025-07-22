@@ -1,6 +1,7 @@
 import React from "react";
 import { FaUserGraduate, FaChalkboardTeacher, FaClipboardList, FaPlusCircle, FaChartBar, FaCalendarAlt, FaBuilding, FaEdit, FaTrash } from "react-icons/fa";
 
+
 const OwnerDashboard = () => {
   const ownerName = "Debby Chepkoech";
   const schoolName = "Shuleni Academy";
