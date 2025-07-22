@@ -1,5 +1,5 @@
 import React from "react";
-import { FaUserGraduate, FaChalkboardTeacher, FaClipboardList, FaPlusCircle, FaChartBar, FaCalendarAlt } from "react-icons/fa"; // FaCalendarAlt added
+import { FaUserGraduate, FaChalkboardTeacher, FaClipboardList, FaPlusCircle, FaChartBar, FaCalendarAlt, FaBuilding, FaEdit, FaTrash } from "react-icons/fa";
 
 const OwnerDashboard = () => {
   const ownerName = "Debby Chepkoech";
@@ -9,9 +9,27 @@ const OwnerDashboard = () => {
   const backgroundImage =
     "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1950&q=80";
 
+  const ownedSchools = [
+    { id: 1, name: "Shuleni Academy", location: "Nairobi", established: "2010" },
+    { id: 2, name: "Bright Future Primary", location: "Mombasa", established: "2015" },
+    { id: 3, name: "Excel High School", location: "Kisumu", established: "2018" },
+    { id: 4, name: "Summit Learning Center", location: "Eldoret", established: "2020" },
+  ];
+
+  const handleEditSchool = (schoolId, schoolName) => {
+    console.log(`Edit school with ID: ${schoolId}, Name: ${schoolName}`);
+    alert(`(Future Functionality) Navigating to edit page for ${schoolName}`);
+  };
+
+  const handleDeleteSchool = (schoolId, schoolName) => {
+    if (window.confirm(`Are you sure you want to delete ${schoolName}? This action cannot be undone.`)) {
+      console.log(`Delete school with ID: ${schoolId}, Name: ${schoolName}`);
+      alert(`(Future Functionality) Deleting ${schoolName}...`);
+    }
+  };
+
   return (
     <div className="min-h-screen flex bg-gray-100 relative overflow-hidden">
-      {/* Subtle Background Image */}
       <div
         className="absolute inset-0 z-0"
         style={{
@@ -44,6 +62,10 @@ const OwnerDashboard = () => {
             <button className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
               Profile
             </button>
+            <button className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
+              Log out
+            </button>
+
         </nav>
       </aside>
 
@@ -52,11 +74,9 @@ const OwnerDashboard = () => {
             <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
             <div className="flex items-center space-x-3">
               <p className="text-gray-600 hidden sm:block">Welcome, {ownerName}</p>
-      
             </div>
           </div>
 
-          {/* Stat cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 mb-8">
             <div className="bg-white shadow rounded-lg p-5 flex items-center space-x-4">
               <FaUserGraduate className="text-blue-500 text-3xl" />
@@ -74,7 +94,6 @@ const OwnerDashboard = () => {
             </div>
           </div>
 
-          {/* Quick Actions */}
           <section className="mb-8">
             <h2 className="text-xl font-semibold text-gray-800 mb-4">Quick Actions</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -86,42 +105,62 @@ const OwnerDashboard = () => {
                     <FaChalkboardTeacher className="text-2xl" />
                     <span>Add New Teacher</span>
                 </button>
-                <button className="bg-indigo-700 text-white p-4 rounded-lg shadow-md hover:bg-indigo-800 flex items-center justify-center space-x-2"> {/* Changed purple to indigo */}
+                <button className="bg-indigo-700 text-white p-4 rounded-lg shadow-md hover:bg-indigo-800 flex items-center justify-center space-x-2">
                     <FaClipboardList className="text-2xl" />
                     <span>Generate Report</span>
                 </button>
-                 <button className="bg-amber-700 text-white p-4 rounded-lg shadow-md hover:bg-amber-800 flex items-center justify-center space-x-2"> {/* Darker yellow */}
+                 <button className="bg-amber-700 text-white p-4 rounded-lg shadow-md hover:bg-amber-800 flex items-center justify-center space-x-2">
                     <FaCalendarAlt className="text-2xl" />
                     <span>View Calendar</span>
                 </button>
             </div>
           </section>
 
-          
-
-          {/* Upcoming Events/Calendar Snippet - NEW SECTION */}
-          <section>
+          <section className="mb-8">
             <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center space-x-2">
-                <FaCalendarAlt className="text-purple-600" />
-                <span>Upcoming Events</span>
+    
+                <span>My Schools ({ownedSchools.length})</span>
             </h2>
             <div className="bg-white shadow rounded-lg p-6">
-              <ul className="space-y-3">
-                <li className="flex items-center space-x-3 text-gray-700">
-                    <span className="font-semibold text-gray-600">📅 Aug 10, 2025:</span>
-                    <span>Parent-Teacher Conference</span>
-                </li>
-                <li className="flex items-center space-x-3 text-gray-700">
-                    <span className="font-semibold text-gray-600">📅 Aug 15, 2025:</span>
-                    <span>School Board Meeting</span>
-                </li>
-                <li className="flex items-center space-x-3 text-gray-700">
-                    <span className="font-semibold text-gray-600">📅 Aug 22, 2025:</span>
-                    <span>Annual Sports Day</span>
-                </li>
-              </ul>
+              {ownedSchools.length === 0 ? (
+                <p className="text-gray-600">No schools found. Click 'Add New School' to get started!</p>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {ownedSchools.map(school => (
+                    <div key={school.id} className="border border-gray-200 rounded-lg p-4 flex flex-col justify-between">
+                      <h3 className="text-lg font-semibold text-gray-800 mb-2">{school.name}</h3>
+                      <p className="text-gray-600 text-sm">Location: {school.location}</p>
+                      <p className="text-gray-600 text-sm mb-3">Est.: {school.established}</p>
+                      <div className="flex space-x-2 mt-2">
+                        <button
+                          onClick={() => handleEditSchool(school.id, school.name)}
+                          className="bg-blue-500 text-white px-3 py-1 rounded-md text-sm hover:bg-blue-600 transition-colors flex items-center space-x-1"
+                        >
+                          <FaEdit className="text-xs" />
+                          <span>Edit</span>
+                        </button>
+                        <button
+                          onClick={() => handleDeleteSchool(school.id, school.name)}
+                          className="bg-red-500 text-white px-3 py-1 rounded-md text-sm hover:bg-red-600 transition-colors flex items-center space-x-1"
+                        >
+                          <FaTrash className="text-xs" />
+                          <span>Delete</span>
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+               <div className="mt-6 text-center">
+                    <button className="bg-purple-600 text-white p-3 rounded-lg shadow-md hover:bg-purple-700 flex items-center justify-center space-x-2 mx-auto">
+                        <FaPlusCircle className="text-xl" />
+                        <span>Add New School</span>
+                    </button>
+                </div>
             </div>
           </section>
+
+      
 
       </main>
     </div>
