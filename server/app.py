@@ -3,9 +3,7 @@ from flask import Flask, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api, Resource
 from flask_migrate import Migrate
-
-
-from routes.schools import SchoolListResource, SchoolResource
+from routes.schools import SchoolListResource, SchoolResour
 
 
 from config import Config
@@ -32,6 +30,9 @@ migrate = Migrate(app, db)
 from routes.auth_routes import SchoolOwnerRegister, AdminCreateEducator, AdminCreateStudent, Login, ChangePassword, UserProfile
 from schemas import SchoolOwnerRegistrationSchema, StudentCreationSchema, EducatorCreationSchema, LoginSchema, ChangePasswordSchema, UserProfileResponseSchema, AuthResponseSchema, UserCreationResponseSchema
 from routes.school_stats import SchoolStats
+from routes.schools import SchoolListResource, SchoolResource
+from routes.student_route import StudentListResource, StudentResource
+
 
 # import models
 from models import *
@@ -153,8 +154,14 @@ class Home(Resource):
 # register the route
 api.add_resource(Home, '/api/home', endpoint='home')
 
+
+api.add_resource(SchoolListResource, "/api/schools")
+api.add_resource(SchoolResource, "/api/schools/<int:id>")
+api.add_resource(StudentListResource, "/api/students")
+api.add_resource(StudentResource, "/api/students/<int:student_id>")
 api.add_resource(SchoolListResource, "/schools")
 api.add_resource(SchoolResource, "/schools/<int:id>")
+
 
 # api.add_resource(ValidatedSchoolOwnerRegister, '/api/register/owner')
 # api.add_resource(ValidatedAdminCreateStudent, '/api/admin/create-student')
