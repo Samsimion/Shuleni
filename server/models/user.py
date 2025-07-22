@@ -32,8 +32,26 @@ class User(db.Model, SerializerMixin):
     messages = db.relationship('Chat', back_populates='sender', cascade='all, delete-orphan')
 
     serialize_rules = ('-password_hash','-school.users','-class_memberships.user', '-attendances.student', '-marked_attendance.educator')
+    
+    
+    
+    @hybrid_property
+    def password_hash(self):
+        raise AttributeError('Password hash may not be viewed.')
+    
+    @password_hash.setter
+    def password_hash(self, password):
+        hashed_password = bcrypt.generate_password_hash(password)
+        self._password_hash = hashed_password.decode('utf-8')
+        
+    def authenticate(self, password):
+        return bcrypt.check_password_hash(self._password_hash, password)
+    
+
 
 
     def __repr__(self):
         return f"<User id={self.id} name='{self.full_name}' role={self.role} school_id={self.school_id}>"
     
+
+
