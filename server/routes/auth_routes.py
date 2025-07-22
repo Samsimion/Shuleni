@@ -189,6 +189,47 @@ class AdminCreateEducator(Resource):
         return ''.join(secrets.choice(characters) for _ in range(length))
 
 
+class CreateSchool(Resource):
+    """Create a new school - typically used by super admin or system admin"""
+    @jwt_required()
+    def post(self):
+        current_user = get_jwt_identity()
+        data = request.get_json()
+        
+        if current_user['role'] != 'owner':
+            return {"error": "Unauthorized"}, 403
+        
+        required_fields = ['name']
+        for field in required_fields:
+            if not data.get(field):
+                return {"error": f"{field} cannot be empty"}, 400
+        
+        # Check if school name already exists
+        existing_school = School.query.filter_by(name=data['name']).first()
+        if existing_school:
+            return {"error": "School name already exists"}, 409
+        
+        # Create school
+        school = School(
+            name=data['name'],
+            description=data.get('description', ''),
+            address=data.get('address', ''),
+            created_at=datetime.now(timezone.utc),
+            owner_id=current_user['id']
+        )
+        
+        db.session.add(school)
+        db.session.commit()
+        
+        return {
+            "message": "School created successfully",
+            "school_id": school.id,
+            "school_name": school.name,
+            "description": school.description,
+            "address": school.address
+        }, 201
+
+
 
 class Login(Resource):
     """Universal login for all user types"""
