@@ -69,6 +69,9 @@ const OwnerDashboard = () => {
             <button onClick={CreateEducatorRedirect} className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
               Manage teachers
             </button>
+            <button onClick={CreateEducatorRedirect} className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
+              Manage schools
+            </button>
             <button className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
               Reports
             </button>
