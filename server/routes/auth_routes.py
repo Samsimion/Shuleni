@@ -39,6 +39,7 @@ class SchoolOwnerRegister(Resource):
             full_name=data['full_name'],
             role='owner',
             school_id=school.id,
+            first_login=False,
             created_at=datetime.now(timezone.utc)
         )
         user.password_hash = data['password']
@@ -100,6 +101,7 @@ class AdminCreateStudent(Resource):
             email=f"{data['admission_number']}@gmail.com",  # Temporary email
             role='student',
             school_id=target_school_id,
+            first_login=True,  # Set first_login flag to True
             created_at=datetime.now(timezone.utc)
         )
         user.password_hash = temp_password
@@ -177,6 +179,7 @@ class AdminCreateEducator(Resource):
             email=data['school_email'],
             role='educator',
             school_id=target_school_id,
+            first_login=True,  # Set first_login flag to True
             created_at=datetime.now(timezone.utc)
         )
         user.password_hash = temp_password
@@ -300,7 +303,8 @@ class Login(Resource):
                 'id': user.id,
                 'school_id': user.school_id,
                 'email': user.email if user.role != 'student' else None,
-                'admission_number': user.student_profile.admission_number if user.role == 'student' else None
+                'admission_number': user.student_profile.admission_number if user.role == 'student' else None,
+                'first_login': user.first_login  # Include first_login flag
             }, 200
         
         return {'error': 'Invalid credentials'}, 401
@@ -329,6 +333,9 @@ class ChangePassword(Resource):
         # Hash new password
         # new_password_hashed = bcrypt.generate_password_hash(new_password).decode('utf-8')
         user.password_hash = new_password
+        
+        # Reset first_login flag to False after successful password change
+        user.first_login = False
         
         db.session.commit()
         
