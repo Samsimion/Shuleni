@@ -13,6 +13,7 @@ import SchoolStats from './pages/SchoolStats';
 import Unauthorized from './pages/Unauthorized';
 import OwnerPage from './pages/OwnerPage';
 import CreateSchool from './pages/CreateSchool';
+import SchoolDetails from './components/schools/SchoolDetails';
 import StudentDashboard from './components/dashboards/StudentDashboard';
 import useAuth from './hooks/useAuth';
 
@@ -58,6 +59,7 @@ export const AppRoutes = () => {
 
     
 
+        {/* <Route path="/user-profile" element={<UserProfilePage/>}/> */}
       </Route>
 
       {/* 🔐 Owner-only routes */}
@@ -110,8 +112,16 @@ export const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
-       
-     
+
+      <Route
+        path="/school/:schoolId/details"
+        element={
+          <ProtectedRoute allowedRoles={['owner']}>
+            <SchoolDetails />
+          </ProtectedRoute>
+        }
+      />
+
 
       {/* 🔐 Shared routes: owner, educator, student */}
       <Route

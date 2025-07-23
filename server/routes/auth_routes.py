@@ -70,10 +70,21 @@ class AdminCreateStudent(Resource):
             if not data.get(field):
                 return {"error": f"{field} cannot be empty"}, 400
         
-        # Check if admission number already exists in this school
+        # Determine which school_id to use
+        if data.get('school_id'):
+            # Manual school_id provided - validate owner has access to this school
+            target_school_id = data['school_id']
+            school = School.query.filter_by(id=target_school_id, owner_id=current_user['id']).first()
+            if not school:
+                return {"error": "School not found or unauthorized access"}, 403
+        else:
+            # Use owner's default school_id
+            target_school_id = current_user['school_id']
+        
+        # Check if admission number already exists in the target school
         existing_student = Student.query.filter_by(
             admission_number=data['admission_number'],
-            school_id=current_user['school_id']
+            school_id=target_school_id
         ).first()
         
         if existing_student:
@@ -88,7 +99,7 @@ class AdminCreateStudent(Resource):
             full_name=data['full_name'],
             email=f"{data['admission_number']}@gmail.com",  # Temporary email
             role='student',
-            school_id=current_user['school_id'],
+            school_id=target_school_id,
             created_at=datetime.now(timezone.utc)
         )
         user.password_hash = temp_password
@@ -99,7 +110,7 @@ class AdminCreateStudent(Resource):
         # Create student profile
         student = Student(
             user_id=user.id,
-            school_id=current_user['school_id'],
+            school_id=target_school_id,
             admission_number=data['admission_number'],
             grade=data.get('grade'), # Optional - can be None initially
             class_id=data.get('class_id'), # Optional - can be None initially
@@ -141,6 +152,17 @@ class AdminCreateEducator(Resource):
             if not data.get(field):
                 return {"error": f"{field} cannot be empty"}, 400
         
+        # Determine which school_id to use
+        if data.get('school_id'):
+            # Manual school_id provided - validate owner has access to this school
+            target_school_id = data['school_id']
+            school = School.query.filter_by(id=target_school_id, owner_id=current_user['id']).first()
+            if not school:
+                return {"error": "School not found or unauthorized access"}, 403
+        else:
+            # Use owner's default school_id
+            target_school_id = current_user['school_id']
+        
         # Check if email already exists
         if User.query.filter_by(email=data['school_email']).first():
             return {"error": "Email already exists"}, 409
@@ -154,7 +176,7 @@ class AdminCreateEducator(Resource):
             full_name=data['full_name'],
             email=data['school_email'],
             role='educator',
-            school_id=current_user['school_id'],
+            school_id=target_school_id,
             created_at=datetime.now(timezone.utc)
         )
         user.password_hash = temp_password
@@ -166,7 +188,7 @@ class AdminCreateEducator(Resource):
         teacher = Teacher(
             name=data['full_name'],
             user_id=user.id,
-            school_id=current_user['school_id'],
+            school_id=target_school_id,
             tsc_number=data['tsc_number'],
             class_id=data.get('class_id'),
             created_at=datetime.now(timezone.utc)
