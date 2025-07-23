@@ -38,7 +38,7 @@ const CreateSchool = ({ onSuccess }) => {
     try {
       const response = await axios.post('/create-school', formData, {
         withCredentials: true, // needed if using cookies for JWT
-      });
+      }); 
 
       // Capture the data returned from the server
       const { message, school_id, school_name, description, address } = response.data;

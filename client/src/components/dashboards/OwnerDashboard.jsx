@@ -1,12 +1,50 @@
-import React from "react";
-
-
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaUserGraduate, FaChalkboardTeacher, FaClipboardList, FaPlusCircle, FaChartBar, FaCalendarAlt, FaBuilding, FaEdit, FaTrash } from "react-icons/fa";
+import api from '../../api/axios';
 
 
 const OwnerDashboard = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  
+  // State management
+  const [dashboardData, setDashboardData] = useState({
+    owner: { full_name: '', email: '' },
+    schools: [],
+    stats: {
+      total_schools: 0,
+      total_students: 0,
+      total_teachers: 0,
+      recent_students: 0,
+      recent_teachers: 0
+    }
+  });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch dashboard data
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get('/owner/dashboard');
+        setDashboardData(response.data);
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching dashboard data:', err);
+        setError(err.message || 'Failed to load dashboard data');
+        // If token is invalid, redirect to login
+        if (err.message.includes('token') || err.message.includes('Unauthorized')) {
+          localStorage.removeItem('token');
+          navigate('/login');
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, [navigate]);
 
   function handleRedirect(){
     navigate('/create-student-registration')
@@ -16,23 +54,19 @@ const OwnerDashboard = () => {
     navigate('/create-educator-registration')
   }
 
+  function CreateSchoolRedirect(){
+    navigate('/create-school')
+  }
+
   function handleLogout(){
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
     navigate('/')
   }
 
-  const ownerName = "Debby Chepkoech";
-  const schoolName = "Shuleni Academy";
   const schoolLogo = "/logo.png";
-
   const backgroundImage =
     "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1950&q=80";
-
-  const ownedSchools = [
-    { id: 1, name: "Shuleni Academy", location: "Nairobi", established: "2010" },
-    { id: 2, name: "Bright Future Primary", location: "Mombasa", established: "2015" },
-    { id: 3, name: "Excel High School", location: "Kisumu", established: "2018" },
-    { id: 4, name: "Summit Learning Center", location: "Eldoret", established: "2020" },
-  ];
 
   const handleEditSchool = (schoolId, schoolName) => {
     console.log(`Edit school with ID: ${schoolId}, Name: ${schoolName}`);
@@ -62,7 +96,7 @@ const OwnerDashboard = () => {
       <aside className="w-64 bg-white shadow-md p-4 z-10">
         <div className="flex items-center space-x-2 mb-8">
           <img src={schoolLogo} alt="School Logo" className="w-12 h-12" />
-          <span className="text-lg font-semibold">{schoolName}</span>
+          <span className="text-lg font-semibold">Shuleni</span>
         </div>
         <nav className="space-y-4">
            <button className="block w-full text-left px-3 py-2 rounded text-blue-700 bg-blue-100 font-medium">
@@ -74,7 +108,7 @@ const OwnerDashboard = () => {
             <button onClick={CreateEducatorRedirect} className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
               Manage teachers
             </button>
-            <button className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
+            <button onClick={CreateSchoolRedirect} className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
               Manage schools
             </button>
             <button className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
@@ -91,26 +125,53 @@ const OwnerDashboard = () => {
       </aside>
 
       <main className="flex-1 p-8 relative z-10">
+        {loading ? (
+          <div className="flex items-center justify-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <span className="ml-3 text-gray-600">Loading dashboard...</span>
+          </div>
+        ) : error ? (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-8">
+            <strong className="font-bold">Error: </strong>
+            <span className="block sm:inline">{error}</span>
+          </div>
+        ) : (
+        <>
         <div className="flex justify-between items-center mb-8">
             <h1 className="text-2xl font-bold text-gray-800">Dashboard</h1>
             <div className="flex items-center space-x-3">
-              <p className="text-gray-600 hidden sm:block">Welcome, {ownerName}</p>
+              <p className="text-gray-600 hidden sm:block">Welcome, {dashboardData.owner.full_name}</p>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div className="bg-white shadow rounded-lg p-5 flex items-center space-x-4">
+              <FaBuilding className="text-purple-500 text-3xl" />
+              <div>
+                <p className="text-gray-500">Total Schools</p>
+                <h3 className="text-xl font-semibold text-gray-800">{dashboardData.stats.total_schools}</h3>
+              </div>
+            </div>
             <div className="bg-white shadow rounded-lg p-5 flex items-center space-x-4">
               <FaUserGraduate className="text-blue-500 text-3xl" />
               <div>
                 <p className="text-gray-500">Total Students</p>
-                <h3 className="text-xl font-semibold text-gray-800">1,245</h3>
+                <h3 className="text-xl font-semibold text-gray-800">{dashboardData.stats.total_students}</h3>
               </div>
             </div>
             <div className="bg-white shadow rounded-lg p-5 flex items-center space-x-4">
               <FaChalkboardTeacher className="text-green-500 text-3xl" />
               <div>
                 <p className="text-gray-500">Total Teachers</p>
-                <h3 className="text-xl font-semibold text-gray-800">58</h3>
+                <h3 className="text-xl font-semibold text-gray-800">{dashboardData.stats.total_teachers}</h3>
+              </div>
+            </div>
+            <div className="bg-white shadow rounded-lg p-5 flex items-center space-x-4">
+              <FaChartBar className="text-yellow-500 text-3xl" />
+              <div>
+                <p className="text-gray-500">Recent Activity</p>
+                <h3 className="text-xl font-semibold text-gray-800">{dashboardData.stats.recent_students + dashboardData.stats.recent_teachers}</h3>
+                <p className="text-xs text-gray-400">Last 30 days</p>
               </div>
             </div>
           </div>
@@ -139,19 +200,31 @@ const OwnerDashboard = () => {
 
           <section className="mb-8">
             <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center space-x-2">
-    
-                <span>My Schools ({ownedSchools.length})</span>
+                <FaBuilding className="text-purple-500" />
+                <span>My Schools ({dashboardData.schools.length})</span>
             </h2>
             <div className="bg-white shadow rounded-lg p-6">
-              {ownedSchools.length === 0 ? (
-                <p className="text-gray-600">No schools found. Click 'Add New School' to get started!</p>
+              {dashboardData.schools.length === 0 ? (
+                <div className="text-center py-8">
+                  <FaBuilding className="mx-auto text-6xl text-gray-300 mb-4" />
+                  <p className="text-gray-600 mb-4">No schools found. Click 'Add New School' to get started!</p>
+                </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {ownedSchools.map(school => (
-                    <div key={school.id} className="border border-gray-200 rounded-lg p-4 flex flex-col justify-between">
-                      <h3 className="text-lg font-semibold text-gray-800 mb-2">{school.name}</h3>
-                      <p className="text-gray-600 text-sm">Location: {school.location}</p>
-                      <p className="text-gray-600 text-sm mb-3">Est.: {school.established}</p>
+                  {dashboardData.schools.map(school => (
+                    <div key={school.id} className="border border-gray-200 rounded-lg p-4 flex flex-col justify-between hover:shadow-md transition-shadow">
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-800 mb-2">{school.name}</h3>
+                        {school.description && (
+                          <p className="text-gray-600 text-sm mb-2">{school.description}</p>
+                        )}
+                        <p className="text-gray-600 text-sm">Location: {school.location || 'Not specified'}</p>
+                        <p className="text-gray-600 text-sm mb-3">Est.: {school.established}</p>
+                        <div className="flex justify-between text-sm text-gray-500 mb-3">
+                          <span>Students: {school.student_count}</span>
+                          <span>Teachers: {school.teacher_count}</span>
+                        </div>
+                      </div>
                       <div className="flex space-x-2 mt-2">
                         <button
                           onClick={() => handleEditSchool(school.id, school.name)}
@@ -173,13 +246,18 @@ const OwnerDashboard = () => {
                 </div>
               )}
                <div className="mt-6 text-center">
-                    <button className="bg-purple-600 text-white p-3 rounded-lg shadow-md hover:bg-purple-700 flex items-center justify-center space-x-2 mx-auto">
+                    <button 
+                      onClick={CreateSchoolRedirect}
+                      className="bg-purple-600 text-white p-3 rounded-lg shadow-md hover:bg-purple-700 flex items-center justify-center space-x-2 mx-auto transition-colors"
+                    >
                         <FaPlusCircle className="text-xl" />
                         <span>Add New School</span>
                     </button>
                 </div>
             </div>
           </section>
+        </>
+        )}
 
       
 
