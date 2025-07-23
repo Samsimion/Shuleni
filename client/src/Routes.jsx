@@ -12,6 +12,7 @@ import ChangePassword from './pages/ChangePassword';
 import SchoolStats from './pages/SchoolStats';
 import Unauthorized from './pages/Unauthorized';
 import OwnerPage from './pages/OwnerPage';
+import CreateSchool from './pages/CreateSchool';
 import StudentDashboard from './components/dashboards/StudentDashboard';
 import useAuth from './hooks/useAuth';
 
@@ -69,8 +70,18 @@ export const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
+
+      <Route
+        path="/create-school"
+        element={
+          <ProtectedRoute allowedRoles={['owner']}>
+            <CreateSchool />
+          </ProtectedRoute>
+        }
+      />
       
-    
+     
+      
 
       <Route
         path="/create-student-registration"
