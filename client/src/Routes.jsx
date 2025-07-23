@@ -55,10 +55,6 @@ export const AppRoutes = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/school-owner-registration" element={<SchoolOwnerRegistration />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
-        <Route path="/student-dashboard" element={<StudentDashboard />} />
-
-    
-
         {/* <Route path="/user-profile" element={<UserProfilePage/>}/> */}
       </Route>
 
@@ -81,8 +77,6 @@ export const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
-      
-     
       
 
       <Route
@@ -122,7 +116,19 @@ export const AppRoutes = () => {
         }
       />
 
+
+
       {/* 🔐 Student-only routes */}
+      <Route
+        path="/student-dashboard"
+        element={
+          <ProtectedRoute allowedRoles={['student']}>
+            <StudentDashboard />
+          </ProtectedRoute>
+        }
+      />
+
+
 
 
       {/* 🔐 Shared routes: owner, educator, student */}
