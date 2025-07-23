@@ -19,7 +19,7 @@ import useAuth from './hooks/useAuth';
 
 
 export const AppRoutes = () => {
-  const { user, loading } = useAuth();
+  const { loading } = useAuth();
 
   // 🔁 Determine dashboard route based on role
   // const getDashboardPath = () => {
@@ -121,6 +121,8 @@ export const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
+
+      {/* 🔐 Student-only routes */}
 
 
       {/* 🔐 Shared routes: owner, educator, student */}
