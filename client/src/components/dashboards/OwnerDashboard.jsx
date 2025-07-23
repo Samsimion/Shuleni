@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaUserGraduate, FaChalkboardTeacher, FaClipboardList, FaPlusCircle, FaChartBar, FaCalendarAlt, FaBuilding, FaEdit, FaTrash } from "react-icons/fa";
 import api from '../../api/axios';
+import Sidebar from '../common/Sidebar';
 
 
 const OwnerDashboard = () => {
@@ -58,13 +59,6 @@ const OwnerDashboard = () => {
     navigate('/create-school')
   }
 
-  function handleLogout(){
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    navigate('/')
-  }
-
-  const schoolLogo = "/logo.png";
   const backgroundImage =
     "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?auto=format&fit=crop&w=1950&q=80";
 
@@ -80,6 +74,10 @@ const OwnerDashboard = () => {
     }
   };
 
+  const handleViewSchool = (schoolId) => {
+    navigate(`/school/${schoolId}/details`);
+  };
+
   return (
     <div className="min-h-screen flex bg-gray-100 relative overflow-hidden">
       <div
@@ -93,36 +91,7 @@ const OwnerDashboard = () => {
         }}
       />
 
-      <aside className="w-64 bg-white shadow-md p-4 z-10">
-        <div className="flex items-center space-x-2 mb-8">
-          <img src={schoolLogo} alt="School Logo" className="w-12 h-12" />
-          <span className="text-lg font-semibold">Shuleni</span>
-        </div>
-        <nav className="space-y-4">
-           <button className="block w-full text-left px-3 py-2 rounded text-blue-700 bg-blue-100 font-medium">
-              Dashboard
-            </button>
-            <button onClick={handleRedirect} className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
-              Manage students
-            </button>
-            <button onClick={CreateEducatorRedirect} className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
-              Manage teachers
-            </button>
-            <button onClick={CreateSchoolRedirect} className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
-              Manage schools
-            </button>
-            <button className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
-              Reports
-            </button>
-            <button className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
-              Profile
-            </button>
-            <button onClick={handleLogout} className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
-              Log out
-            </button>
-
-        </nav>
-      </aside>
+      <Sidebar />
 
       <main className="flex-1 p-8 relative z-10">
         {loading ? (
@@ -212,9 +181,9 @@ const OwnerDashboard = () => {
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {dashboardData.schools.map(school => (
-                    <div key={school.id} className="border border-gray-200 rounded-lg p-4 flex flex-col justify-between hover:shadow-md transition-shadow">
-                      <div>
-                        <h3 className="text-lg font-semibold text-gray-800 mb-2">{school.name}</h3>
+                    <div key={school.id} className="border border-gray-200 rounded-lg p-4 flex flex-col justify-between hover:shadow-md transition-shadow cursor-pointer group">
+                      <div onClick={() => handleViewSchool(school.id)} className="flex-1">
+                        <h3 className="text-lg font-semibold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors">{school.name}</h3>
                         {school.description && (
                           <p className="text-gray-600 text-sm mb-2">{school.description}</p>
                         )}
@@ -227,14 +196,30 @@ const OwnerDashboard = () => {
                       </div>
                       <div className="flex space-x-2 mt-2">
                         <button
-                          onClick={() => handleEditSchool(school.id, school.name)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleViewSchool(school.id);
+                          }}
+                          className="bg-green-500 text-white px-3 py-1 rounded-md text-sm hover:bg-green-600 transition-colors flex items-center space-x-1 flex-1"
+                        >
+                          <FaBuilding className="text-xs" />
+                          <span>View Details</span>
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEditSchool(school.id, school.name);
+                          }}
                           className="bg-blue-500 text-white px-3 py-1 rounded-md text-sm hover:bg-blue-600 transition-colors flex items-center space-x-1"
                         >
                           <FaEdit className="text-xs" />
                           <span>Edit</span>
                         </button>
                         <button
-                          onClick={() => handleDeleteSchool(school.id, school.name)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteSchool(school.id, school.name);
+                          }}
                           className="bg-red-500 text-white px-3 py-1 rounded-md text-sm hover:bg-red-600 transition-colors flex items-center space-x-1"
                         >
                           <FaTrash className="text-xs" />
