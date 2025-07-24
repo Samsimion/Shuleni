@@ -24,15 +24,15 @@ class ClassSchema(ma.SQLAlchemySchema):
 
     url = ma.Hyperlinks(
         {
-            "self": ma.URLFor("classbyid", values=dict(id="<id>")),
-            "collection": ma.URLFor("classes"),
+            "self": ma.URLFor("class_detail", values=dict(id="<id>")),
+            "collection": ma.URLFor("class_list"),
         }
     )
 
 class_schema = ClassSchema()
 classes_schema= ClassSchema(many=True)
 
-class Index(Resource):
+class Index2(Resource):
     def get(self):
         response_dict = {
             "index":"welcome to class api"
@@ -44,7 +44,7 @@ class Index(Resource):
         )
         return response
     
-api.add_resource(Index, "/")
+api.add_resource(Index2, "/another")
 
 class ClassList(Resource):
     def get(self):

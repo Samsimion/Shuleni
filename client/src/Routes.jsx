@@ -10,9 +10,9 @@ import CreateStudentRegistration from './pages/CreateStudentRegistration';
 import CreateEducatorRegistration from './pages/CreateEducatorRegistration';
 import ChangePassword from './pages/ChangePassword';
 import SchoolStats from './pages/SchoolStats';
-import AdminDashboard from './pages/AdminDashboard';
 import Unauthorized from './pages/Unauthorized';
-
+import OwnerPage from './pages/OwnerPage';
+import ClassSection from './pages/ClassSection';
 import useAuth from './hooks/useAuth';
 
 export const AppRoutes = () => {
@@ -49,20 +49,25 @@ export const AppRoutes = () => {
 
       {/* 🌐 Public Pages */}
       <Route element={<PublicLayout />}>
+        <Route path="classes" element={<ClassSection/>} />
         <Route path="/login" element={<Login />} />
         <Route path="/school-owner-registration" element={<SchoolOwnerRegistration />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
       </Route>
 
       {/* 🔐 Owner-only routes */}
+      
       <Route
-        path="/admin-dashboard"
+        path="/owner-dashboard"
         element={
           <ProtectedRoute allowedRoles={['owner']}>
-            <AdminDashboard />
+            <OwnerPage />
           </ProtectedRoute>
         }
       />
+      
+      
+      
 
       <Route
         path="/create-student-registration"
@@ -71,6 +76,7 @@ export const AppRoutes = () => {
             <CreateStudentRegistration />
           </ProtectedRoute>
         }
+        
       />
 
       <Route
