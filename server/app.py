@@ -3,6 +3,11 @@ from flask import Flask, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api, Resource
 from flask_migrate import Migrate
+
+
+from routes.schools import SchoolListResource, SchoolResource
+
+
 from config import Config
 from marshmallow import ValidationError
 from datetime import timedelta
@@ -149,6 +154,10 @@ class Home(Resource):
 
 # register the route
 api.add_resource(Home, '/api/home', endpoint='home')
+
+api.add_resource(SchoolListResource, "/schools")
+api.add_resource(SchoolResource, "/schools/<int:id>")
+
 # api.add_resource(ValidatedSchoolOwnerRegister, '/api/register/owner')
 # api.add_resource(ValidatedAdminCreateStudent, '/api/admin/create-student')
 # api.add_resource(ValidatedAdminCreateEducator, '/api/admin/create-educator')
@@ -166,8 +175,9 @@ api.add_resource(AdminCreateEducator, '/api/admin/create-educator', endpoint='cr
 api.add_resource(ChangePassword, '/api/change-password', endpoint='change_password')
 api.add_resource(UserProfile, '/api/profile', endpoint='user_profile')
 api.add_resource(SchoolStats, '/api/admin/stats', endpoint='school_stats')
-api.add_resource(Attendances, "/attendances", endpoint="attendances_list")
-api.add_resource(AttendanceById ,"/attendances/<int:id>", endpoint="attendance_detail")
-api.add_resource(ClassList,"/classes",endpoint="class_list")
-api.add_resource(ClassById, "/classes/<int:id>", endpoint="attendance_detail")
+api.add_resource(Attendances, "/api/attendances", endpoint="attendances_list")
+api.add_resource(AttendanceById ,"/api/attendances/<int:id>", endpoint="attendance_detail")
+api.add_resource(ClassList,"/api/classes",endpoint="class_list")
+api.add_resource(ClassById, "/api/classes/<int:id>", endpoint="class_detail")
+
 
