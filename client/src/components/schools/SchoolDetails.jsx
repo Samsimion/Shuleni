@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import api from '../../api/axios';
 import { FaUserGraduate, FaChalkboardTeacher, FaPlusCircle, FaBuilding, FaEdit, FaTrash } from "react-icons/fa";
 import Sidebar from '../common/Sidebar';
+import ClassSection from "../../pages/ClassSection";
 
 
 const SchoolDetails = () => {
@@ -186,11 +187,11 @@ const SchoolDetails = () => {
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold text-gray-800">Classes ({schoolData.classes.length})</h2>
               <button 
-                onClick={() => navigate(`/school/${schoolId}/classes`)}
+                onClick={() => navigate(`/classes`)}
                 className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors flex items-center space-x-2"
               >
                 <FaPlusCircle />
-                <span>Create New Class</span>
+                <span>Manage Classes</span>
               </button>
             </div>
             
@@ -200,11 +201,11 @@ const SchoolDetails = () => {
                 <h3 className="text-lg font-semibold text-gray-800 mb-2">No Classes Yet</h3>
                 <p className="text-gray-600 mb-4">Create your first class to start organizing students and teachers.</p>
                 <button 
-                  onClick={() => navigate(`/school/${schoolId}/classes`)}
+                  onClick={() => navigate(`/classes`)}
                   className="bg-blue-600 text-white px-6 py-3 rounded-md hover:bg-blue-700 transition-colors flex items-center space-x-2 mx-auto"
                 >
                   <FaPlusCircle />
-                  <span>Create First Class</span>
+                  <span>Manage Classes</span>
                 </button>
               </div>
             ) : (

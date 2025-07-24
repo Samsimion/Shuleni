@@ -14,7 +14,8 @@ import Unauthorized from './pages/Unauthorized';
 import OwnerPage from './pages/OwnerPage';
 import CreateSchool from './pages/CreateSchool';
 import SchoolDetails from './components/schools/SchoolDetails';
-import StudentDashboard from './components/dashboards/StudentDashboard';import ClassSection from './pages/ClassSection';
+import StudentDashboard from './components/dashboards/StudentDashboard';
+import ClassSection from './pages/ClassSection';
 import useAuth from './hooks/useAuth';
 
 

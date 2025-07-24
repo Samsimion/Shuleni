@@ -4,12 +4,13 @@ from flask_restful import Resource
 from extensions import db
 from models import User, Student, Teacher, School, Class, ClassMember
 from datetime import datetime, timezone
+import json
 
 
 class SchoolDetails(Resource):
     @jwt_required()
     def get(self, school_id):
-        current_user = get_jwt_identity()
+        current_user = json.loads(get_jwt_identity())
         
         # Only owners can access school details
         if current_user['role'] != 'owner':
