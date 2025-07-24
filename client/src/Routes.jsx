@@ -13,6 +13,7 @@ import SchoolStats from './pages/SchoolStats';
 import Unauthorized from './pages/Unauthorized';
 import OwnerPage from './pages/OwnerPage';
 import StudentDashboard from './components/dashboards/StudentDashboard';
+import EducatorDashboard from './components/dashboards/EducatorDashboard';
 import useAuth from './hooks/useAuth';
 
 
@@ -54,6 +55,7 @@ export const AppRoutes = () => {
         <Route path="/school-owner-registration" element={<SchoolOwnerRegistration />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="/student-dashboard" element={<StudentDashboard />} />
+        <Route path="/educator-dashboard" element={<EducatorDashboard />} />
         
 
       </Route>
