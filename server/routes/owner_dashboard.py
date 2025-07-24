@@ -4,12 +4,15 @@ from flask_restful import Resource
 from extensions import db, bcrypt
 from models import User, Student, Teacher, School
 from datetime import datetime, timezone, timedelta
-
+import json
 
 class OwnerDashboard(Resource):
     @jwt_required()
     def get(self):
-        current_user = get_jwt_identity()
+        
+        current_user = json.loads(get_jwt_identity())
+        if not current_user or not isinstance(current_user, dict):
+            return {"error": "Unauthorized"}, 401
         
         # Only owners can access owner dashboard
         if current_user['role'] != 'owner':

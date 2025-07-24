@@ -7,7 +7,7 @@ from sqlalchemy import func, desc
 import csv
 import io
 from models import Attendance,User,Student
-from flask_jwt_exteded import jwt_required
+from flask_jwt_extended import jwt_required
 
 
 

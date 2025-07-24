@@ -6,6 +6,7 @@ from extensions import db, bcrypt
 from datetime import datetime, timezone
 import secrets
 import string
+import json
 
 
 class SchoolOwnerRegister(Resource):
@@ -294,7 +295,7 @@ class Login(Resource):
             elif user.role == 'educator':
                 identity["school_email"] = user.email
                 
-            token = create_access_token(identity=identity)
+            token = create_access_token(identity=json.dumps(identity))
             
             return {
                 'token': token,
@@ -306,6 +307,8 @@ class Login(Resource):
                 'admission_number': user.student_profile.admission_number if user.role == 'student' else None,
                 'first_login': user.first_login  # Include first_login flag
             }, 200
+        
+        
         
         return {'error': 'Invalid credentials'}, 401
 

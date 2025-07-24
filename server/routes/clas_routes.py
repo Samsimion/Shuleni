@@ -8,6 +8,7 @@ import csv
 import io
 from models import Class
 from flask_jwt_extended import jwt_required, get_jwt_identity
+import json
 
 migrate = Migrate(app,db)
 
@@ -50,8 +51,8 @@ api.add_resource(Index2, "/another")
 class ClassList(Resource):
     @jwt_required()
     def get(self):
-        current_user = get_jwt_identity()
-        if current_user["role"]!="owner" or current_user["role"] != "educator":
+        current_user = json.loads(get_jwt_identity())
+        if current_user["role"] not in ["owner", "educator"]:
             return {"error": "unauthorised"}, 403
         try:
             query =Class.query.all()
@@ -67,6 +68,9 @@ class ClassList(Resource):
         
 
     def post(self):
+        current_user = json.loads(get_jwt_identity())
+        if current_user["role"]!="owner" or current_user["role"] != "educator":
+            return {"error": "unauthorised"}, 403
         try:
 
             data =request.get_json()
@@ -93,6 +97,9 @@ api.add_resource(ClassList,"/classes")
 
 class ClassById(Resource):
     def get(self,id):
+        current_user = json.loads(get_jwt_identity())
+        if current_user["role"]!="owner" or current_user["role"] != "educator":
+            return {"error": "unauthorised"}, 403
         clas = Class.query.filter(Class.id==id).first()
         if not clas:
             return make_response({"error":"Classs record not found"},404)
@@ -103,6 +110,10 @@ class ClassById(Resource):
         return response
     
     def patch(self,id):
+        current_user = json.loads(get_jwt_identity())
+        if current_user["role"]!="owner" or current_user["role"] != "educator":
+            return {"error": "unauthorised"}, 403
+        
         data=request.get_json()
         patch_class = Class.query.filter(Class.id==id).first()
         if not patch_class:
