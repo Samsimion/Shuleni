@@ -49,7 +49,7 @@ export const AppRoutes = () => {
 
       {/* 🌐 Public Pages */}
       <Route element={<PublicLayout />}>
-        <Route path="classes" element={<ClassSection/>} />
+        
         <Route path="/login" element={<Login />} />
         <Route path="/school-owner-registration" element={<SchoolOwnerRegistration />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
@@ -106,6 +106,15 @@ export const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
+      <Route path="/classes" 
+      element={
+        <ProtectedRoute allowedRoles={['owner', 'educator']}>
+            <ClassSection/>
+        </ProtectedRoute>
+            
+       
+      } 
+       />
 
       <Route
         path="/user-profile"

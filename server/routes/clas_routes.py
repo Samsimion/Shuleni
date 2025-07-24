@@ -7,6 +7,7 @@ from sqlalchemy import func, desc
 import csv
 import io
 from models import Class
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 migrate = Migrate(app,db)
 
@@ -47,7 +48,11 @@ class Index2(Resource):
 api.add_resource(Index2, "/another")
 
 class ClassList(Resource):
+    @jwt_required()
     def get(self):
+        current_user = get_jwt_identity()
+        if current_user["role"]!="owner" or current_user["role"] != "educator":
+            return {"error": "unauthorised"}, 403
         try:
             query =Class.query.all()
             response = make_response(
