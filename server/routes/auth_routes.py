@@ -39,6 +39,7 @@ class SchoolOwnerRegister(Resource):
             full_name=data['full_name'],
             role='owner',
             school_id=school.id,
+            first_login=False,
             created_at=datetime.now(timezone.utc)
         )
         user.password_hash = data['password']
@@ -70,10 +71,21 @@ class AdminCreateStudent(Resource):
             if not data.get(field):
                 return {"error": f"{field} cannot be empty"}, 400
         
-        # Check if admission number already exists in this school
+        # Determine which school_id to use
+        if data.get('school_id'):
+            # Manual school_id provided - validate owner has access to this school
+            target_school_id = data['school_id']
+            school = School.query.filter_by(id=target_school_id, owner_id=current_user['id']).first()
+            if not school:
+                return {"error": "School not found or unauthorized access"}, 403
+        else:
+            # Use owner's default school_id
+            target_school_id = current_user['school_id']
+        
+        # Check if admission number already exists in the target school
         existing_student = Student.query.filter_by(
             admission_number=data['admission_number'],
-            school_id=current_user['school_id']
+            school_id=target_school_id
         ).first()
         
         if existing_student:
@@ -88,7 +100,8 @@ class AdminCreateStudent(Resource):
             full_name=data['full_name'],
             email=f"{data['admission_number']}@gmail.com",  # Temporary email
             role='student',
-            school_id=current_user['school_id'],
+            school_id=target_school_id,
+            first_login=True,  # Set first_login flag to True
             created_at=datetime.now(timezone.utc)
         )
         user.password_hash = temp_password
@@ -99,7 +112,7 @@ class AdminCreateStudent(Resource):
         # Create student profile
         student = Student(
             user_id=user.id,
-            school_id=current_user['school_id'],
+            school_id=target_school_id,
             admission_number=data['admission_number'],
             grade=data.get('grade'), # Optional - can be None initially
             class_id=data.get('class_id'), # Optional - can be None initially
@@ -141,6 +154,17 @@ class AdminCreateEducator(Resource):
             if not data.get(field):
                 return {"error": f"{field} cannot be empty"}, 400
         
+        # Determine which school_id to use
+        if data.get('school_id'):
+            # Manual school_id provided - validate owner has access to this school
+            target_school_id = data['school_id']
+            school = School.query.filter_by(id=target_school_id, owner_id=current_user['id']).first()
+            if not school:
+                return {"error": "School not found or unauthorized access"}, 403
+        else:
+            # Use owner's default school_id
+            target_school_id = current_user['school_id']
+        
         # Check if email already exists
         if User.query.filter_by(email=data['school_email']).first():
             return {"error": "Email already exists"}, 409
@@ -154,7 +178,8 @@ class AdminCreateEducator(Resource):
             full_name=data['full_name'],
             email=data['school_email'],
             role='educator',
-            school_id=current_user['school_id'],
+            school_id=target_school_id,
+            first_login=True,  # Set first_login flag to True
             created_at=datetime.now(timezone.utc)
         )
         user.password_hash = temp_password
@@ -166,7 +191,7 @@ class AdminCreateEducator(Resource):
         teacher = Teacher(
             name=data['full_name'],
             user_id=user.id,
-            school_id=current_user['school_id'],
+            school_id=target_school_id,
             tsc_number=data['tsc_number'],
             class_id=data.get('class_id'),
             created_at=datetime.now(timezone.utc)
@@ -187,6 +212,47 @@ class AdminCreateEducator(Resource):
         length = 8
         characters = string.ascii_letters + string.digits
         return ''.join(secrets.choice(characters) for _ in range(length))
+
+
+class CreateSchool(Resource):
+    """Create a new school - typically used by super admin or system admin"""
+    @jwt_required()
+    def post(self):
+        current_user = get_jwt_identity()
+        data = request.get_json()
+        
+        if current_user['role'] != 'owner':
+            return {"error": "Unauthorized"}, 403
+        
+        required_fields = ['name']
+        for field in required_fields:
+            if not data.get(field):
+                return {"error": f"{field} cannot be empty"}, 400
+        
+        # Check if school name already exists
+        existing_school = School.query.filter_by(name=data['name']).first()
+        if existing_school:
+            return {"error": "School name already exists"}, 409
+        
+        # Create school
+        school = School(
+            name=data['name'],
+            description=data.get('description', ''),
+            address=data.get('address', ''),
+            created_at=datetime.now(timezone.utc),
+            owner_id=current_user['id']
+        )
+        
+        db.session.add(school)
+        db.session.commit()
+        
+        return {
+            "message": "School created successfully",
+            "school_id": school.id,
+            "school_name": school.name,
+            "description": school.description,
+            "address": school.address
+        }, 201
 
 
 
@@ -237,7 +303,8 @@ class Login(Resource):
                 'id': user.id,
                 'school_id': user.school_id,
                 'email': user.email if user.role != 'student' else None,
-                'admission_number': user.student_profile.admission_number if user.role == 'student' else None
+                'admission_number': user.student_profile.admission_number if user.role == 'student' else None,
+                'first_login': user.first_login  # Include first_login flag
             }, 200
         
         return {'error': 'Invalid credentials'}, 401
@@ -266,6 +333,9 @@ class ChangePassword(Resource):
         # Hash new password
         # new_password_hashed = bcrypt.generate_password_hash(new_password).decode('utf-8')
         user.password_hash = new_password
+        
+        # Reset first_login flag to False after successful password change
+        user.first_login = False
         
         db.session.commit()
         

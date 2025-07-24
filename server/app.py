@@ -3,8 +3,6 @@ from flask import Flask, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api, Resource
 from flask_migrate import Migrate
-
-
 from routes.schools import SchoolListResource, SchoolResource
 
 
@@ -29,9 +27,13 @@ api = Api(app)
 migrate = Migrate(app, db)
 
 # import routes
-from routes.auth_routes import SchoolOwnerRegister, AdminCreateEducator, AdminCreateStudent, Login, ChangePassword, UserProfile
+from routes.auth_routes import SchoolOwnerRegister, AdminCreateEducator, AdminCreateStudent, Login, ChangePassword, UserProfile, CreateSchool
 from schemas import SchoolOwnerRegistrationSchema, StudentCreationSchema, EducatorCreationSchema, LoginSchema, ChangePasswordSchema, UserProfileResponseSchema, AuthResponseSchema, UserCreationResponseSchema
 from routes.school_stats import SchoolStats
+from routes.schools import SchoolListResource, SchoolResource
+from routes.owner_dashboard import OwnerDashboard
+from routes.school_management import SchoolDetails
+
 from routes.attendance_route import AttendanceById, Attendances
 from routes.clas_routes import ClassList,ClassById
 
@@ -155,8 +157,10 @@ class Home(Resource):
 # register the route
 api.add_resource(Home, '/api/home', endpoint='home')
 
-api.add_resource(SchoolListResource, "/schools")
-api.add_resource(SchoolResource, "/schools/<int:id>")
+
+api.add_resource(SchoolListResource, "/api/schools")
+api.add_resource(SchoolResource, "/api/schools/<int:id>")
+
 
 # api.add_resource(ValidatedSchoolOwnerRegister, '/api/register/owner')
 # api.add_resource(ValidatedAdminCreateStudent, '/api/admin/create-student')
@@ -175,6 +179,14 @@ api.add_resource(AdminCreateEducator, '/api/admin/create-educator', endpoint='cr
 api.add_resource(ChangePassword, '/api/change-password', endpoint='change_password')
 api.add_resource(UserProfile, '/api/profile', endpoint='user_profile')
 api.add_resource(SchoolStats, '/api/admin/stats', endpoint='school_stats')
+api.add_resource(CreateSchool, '/api/create-school', endpoint='create_school')
+api.add_resource(OwnerDashboard, '/api/owner/dashboard', endpoint='owner_dashboard')
+
+# School management routes
+api.add_resource(SchoolDetails, '/api/schools/<int:school_id>/details', endpoint='school_details')
+# api.add_resource(ClassManagement, '/api/schools/<int:school_id>/classes', endpoint='class_management')
+# api.add_resource(ClassManagement, '/api/schools/<int:school_id>/classes/<int:class_id>', endpoint='class_management_specific')
+# api.add_resource(AssignUserToClass, '/api/schools/<int:school_id>/classes/<int:class_id>/assignments', endpoint='assign_user_to_class')
 api.add_resource(Attendances, "/api/attendances", endpoint="attendances_list")
 api.add_resource(AttendanceById ,"/api/attendances/<int:id>", endpoint="attendance_detail")
 api.add_resource(ClassList,"/api/classes",endpoint="class_list")
