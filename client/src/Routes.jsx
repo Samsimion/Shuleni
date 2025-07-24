@@ -54,8 +54,7 @@ export const AppRoutes = () => {
         <Route path="/school-owner-registration" element={<SchoolOwnerRegistration />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="/student-dashboard" element={<StudentDashboard />} />
-
-    
+        
 
       </Route>
 
