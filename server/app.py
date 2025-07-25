@@ -27,7 +27,7 @@ api = Api(app)
 migrate = Migrate(app, db)
 
 # import routes
-from routes.auth_routes import SchoolOwnerRegister, AdminCreateEducator, AdminCreateStudent, Login, ChangePassword, UserProfile, CreateSchool
+from routes.auth_routes import SchoolOwnerRegister, AdminCreateEducator, AdminCreateStudent, Login, ChangePassword, UserProfile, CreateSchool, StudentDashboard
 from schemas import SchoolOwnerRegistrationSchema, StudentCreationSchema, EducatorCreationSchema, LoginSchema, ChangePasswordSchema, UserProfileResponseSchema, AuthResponseSchema, UserCreationResponseSchema
 from routes.school_stats import SchoolStats
 from routes.schools import SchoolListResource, SchoolResource
@@ -179,6 +179,7 @@ api.add_resource(UserProfile, '/api/profile', endpoint='user_profile')
 api.add_resource(SchoolStats, '/api/admin/stats', endpoint='school_stats')
 api.add_resource(CreateSchool, '/api/create-school', endpoint='create_school')
 api.add_resource(OwnerDashboard, '/api/owner/dashboard', endpoint='owner_dashboard')
+api.add_resource(StudentDashboard, '/api/student/dashboard', endpoint='student_dashboard')
 
 # School management routes
 api.add_resource(SchoolDetails, '/api/schools/<int:school_id>/details', endpoint='school_details')

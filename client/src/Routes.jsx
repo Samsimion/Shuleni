@@ -15,7 +15,12 @@ import OwnerPage from './pages/OwnerPage';
 import CreateSchool from './pages/CreateSchool';
 import SchoolDetails from './components/schools/SchoolDetails';
 import StudentDashboard from './components/dashboards/StudentDashboard';
+import EducatorDashboard from './components/dashboards/EducatorDashboard';
 import useAuth from './hooks/useAuth';
+import StudentClasses from './pages/StudentClasses';
+import StudentAssessments from './pages/StudentAssessments';
+import StudentAttendance from './pages/StudentAttendance';
+import StudentGrades from './pages/StudentGrades';
 
 
 export const AppRoutes = () => {
@@ -118,6 +123,16 @@ export const AppRoutes = () => {
 
 
 
+      {/* 🔐 Educator-only routes */}
+      <Route
+        path="/educator-dashboard"
+        element={
+          <ProtectedRoute allowedRoles={['educator']}>
+            <EducatorDashboard />
+          </ProtectedRoute>
+        }
+      />
+
       {/* 🔐 Student-only routes */}
       <Route
         path="/student-dashboard"
@@ -127,7 +142,38 @@ export const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
-
+      <Route
+        path="/student/classes"
+        element={
+          <ProtectedRoute allowedRoles={['student']}>
+            <StudentClasses />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/student/assessments"
+        element={
+          <ProtectedRoute allowedRoles={['student']}>
+            <StudentAssessments />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/student/attendance"
+        element={
+          <ProtectedRoute allowedRoles={['student']}>
+            <StudentAttendance />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/student/grades"
+        element={
+          <ProtectedRoute allowedRoles={['student']}>
+            <StudentGrades />
+          </ProtectedRoute>
+        }
+      />
 
 
 
