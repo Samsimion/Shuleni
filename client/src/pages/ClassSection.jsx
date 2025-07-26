@@ -2,6 +2,10 @@ import React,{useEffect,useState} from "react";
 import {useFormik} from "formik";
 import * as yup from "yup";
 
+import { useParams } from "react-router-dom";
+import { useAuth } from "../context/AuthContext"; 
+
+
 import {FiEdit, FiTrash2} from "react-icons/fi"
 import axios from '../api/axios';
 
@@ -14,18 +18,28 @@ function ClassSection(){
     const [error, setError] = useState(null);
     const [showDeleteModal, setShowDeleteModal]=useState(false);
     const [classToDelete, setClassToDelete] = useState(null);
-    const [editingClass, setEditingClass] = useState(null)
+    const [editingClass, setEditingClass] = useState(null);
+    const { schoolId } = useParams();
+    const { currentUser } = useAuth();
+    const selectedSchoolId = parseInt(schoolId, 10);
+    const [total, setTotal] = useState(0);
+
+    const creatorId = currentUser?.id;
+
+  
     
 
     useEffect(()=>{
         console.log("Fetching classes");
-        axios.get("/classes")
+        axios.get(`/classes?school_id=${selectedSchoolId}`)
           
           .then((res)=>{
             console.log("Fetched classes:", res.data);
+            const filtered = res.data.classes.filter((cls)=>cls.school_id===selectedSchoolId)
+            setTotal(res.data.total_students);
             
-            setClasses(res.data);
-            console.log(res.data);
+            setClasses(filtered);
+            console.log(filtered);
           })
           .catch((error) => setError(error))
           .finally(() => setLoading(false));
@@ -54,31 +68,20 @@ function ClassSection(){
     
     const formSchema = yup.object().shape({
         name: yup.string().required("Must enter a name/Tafathali hujawekaa jina").max(100),
-        school_id: yup
-        .number()
-        .positive()
-        .integer()
-        .required("Must enter age")
-        .typeError("Please enter an integer"),
-        created_by: yup
-        .number()
-        .integer()
-        .positive()
-        .required("Must enter a number")
-        .typeError("please enter an Integer"),
-
-
     });
 
     const formik = useFormik({
         initialValues:{
             name:"",
-            school_id:"",
-            created_by:"",
+            
         },
         validationSchema: formSchema,
         onSubmit: (values, {resetForm})=>{
-            axios.post("/classes", values)
+            const payload = {
+                name: values.name,
+                school_id: selectedSchoolId
+            };
+            axios.post("/classes", payload)
             .then((res)=>{
                 console.log("Class created:", res.data);
                 setRefreshPage(!refreshPage);
@@ -108,7 +111,7 @@ function ClassSection(){
                 </div>
                 <div className="bg-white p-4 rounded shadow text-center">
                     <p className="text-sm text-grey-500">Total Students</p>
-                    <h2 className="text-2xl font-bold text-blue-700">coming soon...{}</h2>
+                    <h2 className="text-2xl font-bold text-blue-700">{total}</h2>
                 </div>
                 <div className="bg-white p-4 rounded shadow text-center">
                     <p className="text-sm text-grey-500">Recent Activity</p>
@@ -138,36 +141,6 @@ function ClassSection(){
                                 {formik.touched.name && formik.errors.name && (
                                     <p className="text-red-500 text-sm">{formik.errors.name}</p>
                                 )}
-                            </div>
-                            <div>
-                                <label htmlFor="school_id" className="block text-sm font-medium">School ID</label>
-                                <input
-                                name="school_id"
-                                type="number"
-                                value={formik.values.school_id}
-                                onChange={formik.handleChange}
-                                className="w-full border rounded px-3 py-2 mt-1"
-                                placeholder="1"
-
-                                />
-                                {formik.touched.school_id && formik.errors.school_id && (
-                                    <p className="text-red-500 text-sm">{formik.errors.school_id}</p>
-                                )}
-                            </div>
-                            <div>
-                                <label htmlFor="created_by" className="block text-sm font-medium">Creator ID</label>
-                                <input
-                                type="number"
-                                name="created_by" 
-                                value={formik.values.created_by}
-                                onChange={formik.handleChange}
-                                className="w-full border rounded px-3 py-2 mt-1"
-                                placeholder="1"
-                                />
-                                {formik.touched.created_by && formik.errors.created_by && (
-                                    <p className="text-red-500 text-sm">{formik.errors.created_by}</p>
-                                )}
-
                             </div>
 
                             <button

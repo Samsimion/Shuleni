@@ -127,7 +127,7 @@ class ClassManagement(Resource):
     @jwt_required()
     def post(self, school_id):
         """Create a new class"""
-        current_user = get_jwt_identity()
+        current_user = json.loads(get_jwt_identity())
         
         if current_user['role'] != 'owner':
             return {"error": "Unauthorized"}, 403
@@ -175,7 +175,7 @@ class ClassManagement(Resource):
     @jwt_required()
     def put(self, school_id, class_id):
         """Update a class"""
-        current_user = get_jwt_identity()
+        current_user = json.loads(get_jwt_identity())
         
         if current_user['role'] != 'owner':
             return {"error": "Unauthorized"}, 403
@@ -222,7 +222,7 @@ class ClassManagement(Resource):
     @jwt_required()
     def delete(self, school_id, class_id):
         """Delete a class"""
-        current_user = get_jwt_identity()
+        current_user = json.loads(get_jwt_identity())
         
         if current_user['role'] != 'owner':
             return {"error": "Unauthorized"}, 403
@@ -248,10 +248,12 @@ class ClassManagement(Resource):
 
 
 class AssignUserToClass(Resource):
+    def options(self, school_id, class_id):
+        return {}, 200
     @jwt_required()
     def post(self, school_id, class_id):
         """Assign users to a class"""
-        current_user = get_jwt_identity()
+        current_user = json.loads(get_jwt_identity())
         
         if current_user['role'] != 'owner':
             return {"error": "Unauthorized"}, 403
@@ -269,6 +271,11 @@ class AssignUserToClass(Resource):
             data = request.get_json()
             user_ids = data.get('user_ids', [])
             role = data.get('role')  # 'student' or 'educator'
+
+            print("🔥 Received POST to /assignments")
+            print("➡️ Raw data:", data)
+            print("🧍 user_ids:", user_ids, "🧾 type:", type(user_ids))
+            print("🎭 role:", role)
             
             if not user_ids or not role:
                 return {"error": "user_ids and role are required"}, 400
@@ -338,7 +345,7 @@ class AssignUserToClass(Resource):
     @jwt_required()
     def delete(self, school_id, class_id):
         """Remove users from a class"""
-        current_user = get_jwt_identity()
+        current_user = json.loads(get_jwt_identity())
         
         if current_user['role'] != 'owner':
             return {"error": "Unauthorized"}, 403

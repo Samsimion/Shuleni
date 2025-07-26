@@ -4,9 +4,10 @@ from flask_migrate import Migrate
 from flask_restful import Api,Resource
 from app import app,db,api,ma
 from sqlalchemy import func, desc
+from flask import jsonify
 import csv
 import io
-from models import Class
+from models import Class,User, ClassMember,Student 
 from flask_jwt_extended import jwt_required, get_jwt_identity
 import json
 
@@ -55,10 +56,29 @@ class ClassList(Resource):
         if current_user["role"] not in ["owner", "educator"]:
             return {"error": "unauthorised"}, 403
         try:
-            query =Class.query.all()
-            response = make_response(
-                classes_schema.dump(query)
-            )
+            query =Class.query
+
+            school_id = request.args.get("school_id", type=int)
+            total_students = None
+            if school_id:
+                query = query.filter_by(school_id=school_id)
+                total_students = db.session.query(Student).join(Class).filter(Class.school_id == school_id).count()
+
+            created_by = request.args.get("created_by", type=int)
+            if created_by:
+                query = query.filter_by(created_by=created_by)
+
+            class_name = request.args.get("name")
+            if class_name:
+                query = query.filter(Class.name.ilike(f"%{class_name}%"))
+
+            results = query.all()
+
+            response_data = {
+                "classes": classes_schema.dump(results),
+                "total_students": total_students
+            }
+            response = make_response(response_data, 200)
             return response
 
 
@@ -66,10 +86,10 @@ class ClassList(Resource):
         except Exception as e:
             return make_response({"error":str(e)}, 500)
         
-
+    @jwt_required()
     def post(self):
         current_user = json.loads(get_jwt_identity())
-        if current_user["role"]!="owner" or current_user["role"] != "educator":
+        if current_user["role"] not in ["owner", "educator"]:
             return {"error": "unauthorised"}, 403
         try:
 
@@ -77,7 +97,7 @@ class ClassList(Resource):
             new_class = Class(
                 name = data["name"],
                 school_id = data["school_id"],
-                created_by = data["created_by"]
+                created_by = current_user["id"]
             )
             db.session.add(new_class)
             db.session.commit()
@@ -96,9 +116,10 @@ api.add_resource(ClassList,"/classes")
 
 
 class ClassById(Resource):
+    @jwt_required()
     def get(self,id):
         current_user = json.loads(get_jwt_identity())
-        if current_user["role"]!="owner" or current_user["role"] != "educator":
+        if current_user["role"] not in ["owner", "educator"]:
             return {"error": "unauthorised"}, 403
         clas = Class.query.filter(Class.id==id).first()
         if not clas:
@@ -108,10 +129,10 @@ class ClassById(Resource):
             200,
         )
         return response
-    
+    @jwt_required()
     def patch(self,id):
         current_user = json.loads(get_jwt_identity())
-        if current_user["role"]!="owner" or current_user["role"] != "educator":
+        if current_user["role"] not in ["owner", "educator"]:
             return {"error": "unauthorised"}, 403
         
         data=request.get_json()
@@ -128,6 +149,7 @@ class ClassById(Resource):
             200,
         )
         return response
+    @jwt_required()
     def delete(self,id):
         record = Class.query.filter(Class.id==id).first()
         if not record:

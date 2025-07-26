@@ -34,7 +34,7 @@ from schemas import SchoolOwnerRegistrationSchema, StudentCreationSchema, Educat
 from routes.school_stats import SchoolStats
 from routes.schools import SchoolListResource, SchoolResource
 from routes.owner_dashboard import OwnerDashboard
-from routes.school_management import SchoolDetails
+from routes.school_management import SchoolDetails, AssignUserToClass
 
 from routes.attendance_route import AttendanceById, Attendances
 from routes.clas_routes import ClassList,ClassById
@@ -185,5 +185,11 @@ api.add_resource(CreateSchool, '/api/create-school', endpoint='create_school')
 api.add_resource(OwnerDashboard, '/api/owner/dashboard', endpoint='owner_dashboard')
 api.add_resource(ClassList, "/api/classes", endpoint="class_list")
 api.add_resource(ClassById, "/api/classes/<int:id>", endpoint="class_detail")
+api.add_resource(
+    AssignUserToClass,
+    "/api/schools/<int:school_id>/classes/<int:class_id>/assignments",
+    endpoint="assign_user_to_class",
+    methods=["OPTIONS", "POST", "DELETE"]
+)
 
 api.add_resource(SchoolDetails, '/api/schools/<int:school_id>/details', endpoint='school_details')

@@ -142,7 +142,7 @@ export const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
-      <Route path="/classes" 
+      <Route path="/owner/schools/:schoolId/classes" 
       element={
         <ProtectedRoute allowedRoles={['owner', 'educator']}>
             <ClassSection/>
