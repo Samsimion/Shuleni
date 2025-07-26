@@ -59,7 +59,7 @@ class AdminCreateStudent(Resource):
     """Admin creates student accounts"""
     @jwt_required()
     def post(self):
-        current_user = get_jwt_identity()
+        current_user = json.loads(get_jwt_identity())
         
         # Only owners can create students
         if current_user['role'] != 'owner':
@@ -142,7 +142,7 @@ class AdminCreateEducator(Resource):
     """Admin creates educator accounts"""
     @jwt_required()
     def post(self):
-        current_user = get_jwt_identity()
+        current_user = json.loads(get_jwt_identity())
         
         # Only owners can create educators
         if current_user['role'] != 'owner':
@@ -219,7 +219,7 @@ class CreateSchool(Resource):
     """Create a new school - typically used by super admin or system admin"""
     @jwt_required()
     def post(self):
-        current_user = get_jwt_identity()
+        current_user = json.loads(get_jwt_identity())
         data = request.get_json()
         
         if current_user['role'] != 'owner':
@@ -317,7 +317,7 @@ class ChangePassword(Resource):
     """Allow users to change their password after first login"""
     @jwt_required()
     def post(self):
-        current_user = get_jwt_identity()
+        current_user = json.loads(get_jwt_identity())
         data = request.get_json()
         
         old_password = data.get('old_password')
@@ -348,7 +348,7 @@ class UserProfile(Resource):
     """Get current user profile"""
     @jwt_required()
     def get(self):
-        current_user = get_jwt_identity()
+        current_user = json.loads(get_jwt_identity())
         
         user = User.query.get(current_user['id'])
         if not user:
