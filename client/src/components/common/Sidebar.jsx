@@ -27,6 +27,12 @@ const Sidebar = () => {
     navigate('/owner-dashboard');
   }
 
+  function handleProfile() {
+    navigate('/user-profile');
+  }
+
+
+
   const schoolLogo = "/logo.png";
 
   // Helper function to check if current path matches menu item
@@ -83,7 +89,9 @@ const Sidebar = () => {
         <button className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
           Reports
         </button>
-        <button className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
+        <button
+        onClick={handleProfile}
+        className="block w-full text-left px-3 py-2 rounded hover:bg-gray-100">
           Profile
         </button>
         <button 

@@ -15,30 +15,25 @@ import OwnerPage from './pages/OwnerPage';
 import CreateSchool from './pages/CreateSchool';
 import SchoolDetails from './components/schools/SchoolDetails';
 import StudentDashboard from './components/dashboards/StudentDashboard';
+import EducatorDashboard from './components/dashboards/EducatorDashboard';
 import ClassSection from './pages/ClassSection';
 import useAuth from './hooks/useAuth';
+import StudentClasses from './pages/StudentClasses';
+import StudentAssessments from './pages/StudentAssessments';
+import StudentAttendance from './pages/StudentAttendance';
+import StudentGrades from './pages/StudentGrades';
+import ClassManagement from './components/classes/ClassManagement';
+import Attendances from './pages/Attendance';
 
 
 export const AppRoutes = () => {
   const { loading } = useAuth();
 
-  // 🔁 Determine dashboard route based on role
-  // const getDashboardPath = () => {
-  //   if (!user) return '/login';
-  //   switch (user.role) {
-  //     case 'owner':
-  //       return '/admin-dashboard';
-  //     case 'educator':
-  //       return '/user-profile'; // 🔁 Update if educator dashboard is added
-  //     case 'student':
-  //       return '/user-profile'; // 🔁 Update if student dashboard is added
-  //     default:
-  //       return '/unauthorized';
-  //   }
-  // };
+
+
 
   if (loading) {
-    return <div className="text-center py-20 text-xl">Loading...</div>; // ⏳ Optional: add spinner
+    return <div className="text-center py-20 text-xl">Loading...</div>;
   }
 
   return (
@@ -53,12 +48,31 @@ export const AppRoutes = () => {
 
       {/* 🌐 Public Pages */}
       <Route element={<PublicLayout />}>
-        
+        <Route path="/attendances" element={<Attendances />} />
         <Route path="/login" element={<Login />} />
         <Route path="/school-owner-registration" element={<SchoolOwnerRegistration />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
+        <Route path="/student-dashboard" element={<StudentDashboard />} />
+        
+        
+
         {/* <Route path="/user-profile" element={<UserProfilePage/>}/> */}
       </Route>
+      {/*mwalimu routes*/}
+      <Route path="/educator-dashboard" element={
+        <ProtectedRoute allowedRoles={['educator']}>
+          <EducatorDashboard />
+        </ProtectedRoute>    
+        }
+      />
+
+      <Route path="/attendances" element={
+        <ProtectedRoute>
+          <Attendances />
+        </ProtectedRoute>
+        
+      } 
+      />
 
       {/* 🔐 Owner-only routes */}
       
@@ -120,6 +134,16 @@ export const AppRoutes = () => {
 
 
 
+      {/* 🔐 Educator-only routes */}
+      <Route
+        path="/educator-dashboard"
+        element={
+          <ProtectedRoute allowedRoles={['educator']}>
+            <EducatorDashboard />
+          </ProtectedRoute>
+        }
+      />
+
       {/* 🔐 Student-only routes */}
       <Route
         path="/student-dashboard"
@@ -129,7 +153,38 @@ export const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
-
+      <Route
+        path="/student/classes"
+        element={
+          <ProtectedRoute allowedRoles={['student']}>
+            <StudentClasses />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/student/assessments"
+        element={
+          <ProtectedRoute allowedRoles={['student']}>
+            <StudentAssessments />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/student/attendance"
+        element={
+          <ProtectedRoute allowedRoles={['student']}>
+            <StudentAttendance />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/student/grades"
+        element={
+          <ProtectedRoute allowedRoles={['student']}>
+            <StudentGrades />
+          </ProtectedRoute>
+        }
+      />
 
 
 
@@ -160,7 +215,20 @@ export const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
+
+      <Route
+        path="/school/:schoolId/class/:classId/manage"
+        element={
+          <ProtectedRoute allowedRoles={['owner', 'educator']}>
+            <ClassManagement />
+          </ProtectedRoute>
+        }
+      />
+
+
     </Routes>
   );
 };
+
+
 

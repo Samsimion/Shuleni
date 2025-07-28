@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import axios from  "../api/axios"
+// import axios from 'axios';
 
 
 const UserProfile = () => {
@@ -8,7 +10,7 @@ const UserProfile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const response = await axios.get('/user/profile');
+        const response = await axios.get('/profile');
         setProfile(response.data);
       } catch (err) {
         console.error(err);
@@ -32,8 +34,7 @@ const UserProfile = () => {
       {profile.role === 'student' && (
         <>
           <p><strong>Admission No:</strong> {profile.admission_number}</p>
-          <p><strong>Grade:</strong> {profile.grade}</p>
-          <p><strong>Class ID:</strong> {profile.class_id}</p>
+         
         </>
       )}
       {profile.role === 'educator' && (
