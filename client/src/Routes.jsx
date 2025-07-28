@@ -12,11 +12,15 @@ import ChangePassword from './pages/ChangePassword';
 import SchoolStats from './pages/SchoolStats';
 import Unauthorized from './pages/Unauthorized';
 import OwnerPage from './pages/OwnerPage';
-
+import CreateSchool from './pages/CreateSchool';
+import SchoolDetails from './components/schools/SchoolDetails';
+import StudentDashboard from './components/dashboards/StudentDashboard';
+import ClassSection from './pages/ClassSection';
 import useAuth from './hooks/useAuth';
 
+
 export const AppRoutes = () => {
-  const { user, loading } = useAuth();
+  const { loading } = useAuth();
 
   // 🔁 Determine dashboard route based on role
   // const getDashboardPath = () => {
@@ -49,10 +53,11 @@ export const AppRoutes = () => {
 
       {/* 🌐 Public Pages */}
       <Route element={<PublicLayout />}>
+        
         <Route path="/login" element={<Login />} />
         <Route path="/school-owner-registration" element={<SchoolOwnerRegistration />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
-        <Route path="/user-profile" element={<UserProfilePage/>}/>
+        {/* <Route path="/user-profile" element={<UserProfilePage/>}/> */}
       </Route>
 
       {/* 🔐 Owner-only routes */}
@@ -65,8 +70,15 @@ export const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
-      
-      
+
+      <Route
+        path="/create-school"
+        element={
+          <ProtectedRoute allowedRoles={['owner']}>
+            <CreateSchool />
+          </ProtectedRoute>
+        }
+      />
       
 
       <Route
@@ -97,6 +109,30 @@ export const AppRoutes = () => {
         }
       />
 
+      <Route
+        path="/school/:schoolId/details"
+        element={
+          <ProtectedRoute allowedRoles={['owner']}>
+            <SchoolDetails />
+          </ProtectedRoute>
+        }
+      />
+
+
+
+      {/* 🔐 Student-only routes */}
+      <Route
+        path="/student-dashboard"
+        element={
+          <ProtectedRoute allowedRoles={['student']}>
+            <StudentDashboard />
+          </ProtectedRoute>
+        }
+      />
+
+
+
+
       {/* 🔐 Shared routes: owner, educator, student */}
       <Route
         path="/change-password"
@@ -106,6 +142,15 @@ export const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
+      <Route path="/owner/schools/:schoolId/classes" 
+      element={
+        <ProtectedRoute allowedRoles={['owner', 'educator']}>
+            <ClassSection/>
+        </ProtectedRoute>
+            
+       
+      } 
+       />
 
       <Route
         path="/user-profile"
