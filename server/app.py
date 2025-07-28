@@ -6,6 +6,7 @@ from flask_migrate import Migrate
 from routes.schools import SchoolListResource, SchoolResource
 
 
+
 from config import Config
 from marshmallow import ValidationError
 from datetime import timedelta
