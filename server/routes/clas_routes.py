@@ -235,9 +235,6 @@ class ClassById(Resource):
     
 api.add_resource(ClassById, "/classes/<int:id>")
 
-
-# --- Endpoints ---
-
 class ClassResources(Resource):
     @jwt_required()
     def get(self, class_id):
@@ -255,12 +252,16 @@ class ClassResources(Resource):
         file = request.files.get('file')
         if not title or not file:
             return {"error": "Title and file required"}, 400
+        
 
         filename = f"{datetime.now(timezone.utc).timestamp()}_{file.filename}"
-        filepath = os.path.join("uploads", filename)
+        upload_dir = "uploads"
+        if not os.path.exists(upload_dir):
+            os.makedirs(upload_dir)
+        filepath = os.path.join(upload_dir, filename)
         file.save(filepath)
         file_url = f"/uploads/{filename}"
-
+        
         resource = Resources(
             title=title,
             description=request.form.get('description', ''),
@@ -290,9 +291,12 @@ class ClassAssessments(Resource):
         data = request.get_json()
         title = data.get('title')
         type_ = data.get('type')
-        questions = data.get('questions')
-        if not title or not type_ or not questions:
+        questions_input = data.get('questions')
+        if not title or not type_ or not questions_input:
             return {"error": "Title, type, and questions required"}, 400
+
+        # Parse questions
+        questions = parse_questions(questions_input)
 
         assessment = Assessment(
             title=title,
@@ -384,3 +388,22 @@ class SubmissionByID(Resource):
             return make_response({"message": "Submission deleted"}, 200)
         except Exception as e:
             return make_response({"error": str(e)}, 500)
+        
+
+def parse_questions(questions_input):
+    
+     if isinstance(questions_input, list):
+        return questions_input
+    
+     if isinstance(questions_input, str):
+        # Try to parse as JSON first
+        try:
+            parsed = json.loads(questions_input)
+            if isinstance(parsed, list):
+                return parsed
+        except Exception:
+            pass
+        # Otherwise, treat as plain text: one question per line
+        lines = [q.strip() for q in questions_input.split('\n') if q.strip()]
+        return [{"question": line} for line in lines]
+     return []
