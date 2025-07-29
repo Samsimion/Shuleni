@@ -14,6 +14,7 @@ from flask_jwt_extended import jwt_required
 # Import from extensions
 from extensions import db, ma, jwt, bcrypt, cors
 
+
 app = Flask(__name__)
 app.config.from_object(Config)
 
@@ -37,8 +38,8 @@ from routes.owner_dashboard import OwnerDashboard
 from routes.school_management import SchoolDetails, AssignUserToClass
 
 from routes.attendance_route import AttendanceById, Attendances
-from routes.clas_routes import ClassList,ClassById, ClassResources, ClassAssessments
-
+from routes.clas_routes import ClassList,ClassById, ClassResources, ClassAssessments,AssessmentSubmissions,SubmissionByID
+from routes.assessment_routes import AssessmentById
 # import models
 from models import *
 
@@ -196,3 +197,5 @@ api.add_resource(
 api.add_resource(SchoolDetails, '/api/schools/<int:school_id>/details', endpoint='school_details')
 api.add_resource(ClassResources, "/api/classes/<int:class_id>/resources")
 api.add_resource(ClassAssessments, "/api/classes/<int:class_id>/assessments")
+api.add_resource(AssessmentSubmissions, "/api/classes/<int:class_id>/assessments/<int:assessment_id>/submissions")
+api.add_resource(AssessmentById, "/api/assessments/<int:id>")

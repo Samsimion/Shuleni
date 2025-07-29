@@ -6,7 +6,7 @@ from app import app,db,api,ma
 from sqlalchemy import func, desc
 import csv
 import io
-from models import Class,User, ClassMember,Student, Assessment, Resources
+from models import Class,User, ClassMember,Student, Assessment, Resources, Submission
 from flask_jwt_extended import jwt_required, get_jwt_identity
 import json
 from datetime import datetime, timezone
@@ -73,6 +73,25 @@ class AssessmentSchema(ma.SQLAlchemySchema):
 
 assessment_schema = AssessmentSchema()
 assessments_schema = AssessmentSchema(many=True)
+
+class SubmissionSchema(ma.SQLAlchemySchema):
+    class Meta:
+        model = Submission
+        load_instance = True
+
+    id = ma.auto_field()
+    answers = ma.auto_field()
+    student_id = ma.auto_field()
+    assessment_id = ma.auto_field()
+    submitted_at = ma.auto_field()
+    score = ma.auto_field()
+    graded_by = ma.auto_field()
+    remarks = ma.auto_field()
+
+
+submission_schema = SubmissionSchema()
+submissions_schema = SubmissionSchema(many=True)
+
 
 
 class Index2(Resource):
@@ -216,9 +235,6 @@ class ClassById(Resource):
     
 api.add_resource(ClassById, "/classes/<int:id>")
 
-
-# --- Endpoints ---
-
 class ClassResources(Resource):
     @jwt_required()
     def get(self, class_id):
@@ -236,12 +252,16 @@ class ClassResources(Resource):
         file = request.files.get('file')
         if not title or not file:
             return {"error": "Title and file required"}, 400
+        
 
         filename = f"{datetime.now(timezone.utc).timestamp()}_{file.filename}"
-        filepath = os.path.join("uploads", filename)
+        upload_dir = "uploads"
+        if not os.path.exists(upload_dir):
+            os.makedirs(upload_dir)
+        filepath = os.path.join(upload_dir, filename)
         file.save(filepath)
         file_url = f"/uploads/{filename}"
-
+        
         resource = Resources(
             title=title,
             description=request.form.get('description', ''),
@@ -271,9 +291,12 @@ class ClassAssessments(Resource):
         data = request.get_json()
         title = data.get('title')
         type_ = data.get('type')
-        questions = data.get('questions')
-        if not title or not type_ or not questions:
+        questions_input = data.get('questions')
+        if not title or not type_ or not questions_input:
             return {"error": "Title, type, and questions required"}, 400
+
+        # Parse questions
+        questions = parse_questions(questions_input)
 
         assessment = Assessment(
             title=title,
@@ -288,4 +311,99 @@ class ClassAssessments(Resource):
         db.session.commit()
         return make_response({"message": "Assessment created", "assessment": assessment_schema.dump(assessment)}, 201)
 
+class AssessmentSubmissions(Resource):
+    @jwt_required()
+    def get(self, class_id, assessment_id):
+        try:
+            
+            submissions = Submission.query.filter_by(assessment_id=assessment_id).all()
+            return make_response({"submissions": submissions_schema.dump(submissions)}, 200)
+        except Exception as e:
+            return make_response({"error": str(e)}, 500)
 
+    @jwt_required()
+    def post(self, class_id, assessment_id):
+        current_user = json.loads(get_jwt_identity())
+        try:
+            data = request.get_json()
+            answers = data.get("answers")
+
+            if not answers:
+                return make_response({"error": "Submission answers are required"}, 400)
+
+        
+            assessment = Assessment.query.filter_by(id=assessment_id, class_id=class_id).first()
+            if not assessment:
+                return {"error": "Assessment not found in this class"}, 404
+
+            new_submission = Submission(
+                answers=answers,
+                student_id=current_user["id"],
+                assessment_id=assessment_id,
+                submitted_at=datetime.now(timezone.utc)
+            )
+
+            db.session.add(new_submission)
+            db.session.commit()
+
+            return make_response(submission_schema.dump(new_submission), 201)
+
+        except Exception as e:
+            return make_response({"error": "Submission failed", "details": str(e)}, 500)
+
+
+class SubmissionByID(Resource):
+    @jwt_required()
+    def get(self, id):
+        try:
+            submission = Submission.query.get_or_404(id)
+            return make_response(submission_schema.dump(submission), 200)
+        except Exception as e:
+            return make_response({"error": str(e)}, 500)
+
+    @jwt_required()
+    def patch(self, id):
+        current_user = json.loads(get_jwt_identity())
+        try:
+            submission = Submission.query.get_or_404(id)
+            data = request.get_json()
+
+            
+            submission.score = data.get("score", submission.score)
+            submission.remarks = data.get("remarks", submission.remarks)
+            submission.graded_by = current_user["id"]
+
+            db.session.commit()
+            return make_response(submission_schema.dump(submission), 200)
+
+        except Exception as e:
+            return make_response({"error": str(e)}, 500)
+
+    @jwt_required()
+    def delete(self, id):
+        try:
+            submission = Submission.query.get_or_404(id)
+            db.session.delete(submission)
+            db.session.commit()
+            return make_response({"message": "Submission deleted"}, 200)
+        except Exception as e:
+            return make_response({"error": str(e)}, 500)
+        
+
+def parse_questions(questions_input):
+    
+     if isinstance(questions_input, list):
+        return questions_input
+    
+     if isinstance(questions_input, str):
+        # Try to parse as JSON first
+        try:
+            parsed = json.loads(questions_input)
+            if isinstance(parsed, list):
+                return parsed
+        except Exception:
+            pass
+        # Otherwise, treat as plain text: one question per line
+        lines = [q.strip() for q in questions_input.split('\n') if q.strip()]
+        return [{"question": line} for line in lines]
+     return []
