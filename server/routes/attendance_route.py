@@ -13,6 +13,9 @@ import json
 
 
 
+
+
+
 migrate = Migrate(app,db)
 
 class AttendanceSchema(ma.SQLAlchemySchema):

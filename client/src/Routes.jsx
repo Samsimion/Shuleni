@@ -52,11 +52,15 @@ export const AppRoutes = () => {
         <Route path="/login" element={<Login />} />
         <Route path="/school-owner-registration" element={<SchoolOwnerRegistration />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
-        <Route path="/student-dashboard" element={<StudentDashboard />} />
-        
-        
 
         {/* <Route path="/user-profile" element={<UserProfilePage/>}/> */}
+      
+       
+        
+
+        
+
+
       </Route>
       {/*mwalimu routes*/}
       <Route path="/educator-dashboard" element={

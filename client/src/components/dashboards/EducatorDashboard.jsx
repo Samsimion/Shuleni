@@ -84,7 +84,7 @@ const EducatorDashboard = () => {
             { label: "Attendance", icon: <FaCalendarCheck /> , route: "/educator-dashboard/attendance"},
             { label: "Upload Materials", icon: <FaUpload /> , route: "/educator-dashboard/upload" },
             { label: "Messages", icon: <FaEnvelope /> , route: "/educator-dashboard/messages"},
-            { label: "Profile", icon: <FaUser />, route: "/educator-dashboard/profile" },
+            { label: "Profile", icon: <FaUser />, route: "/user-profile" },
             { label: "Logout", icon: <FaSignOutAlt /> , onClick: handleLogout},
           ].map(({ label, icon, route , onClick}) => (
             <button

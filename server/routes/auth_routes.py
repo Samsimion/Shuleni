@@ -372,11 +372,17 @@ class UserProfile(Resource):
                
             })
         elif user.role == 'educator' and user.teacher_profile:
+            teacher = user.teacher_profile
+        if isinstance(teacher, list):
+            teacher = teacher[0] if teacher else None
+
+        if teacher:
             profile_data.update({
-                "tsc_number": user.teacher_profile.tsc_number,
-                "class_id": user.teacher_profile.class_id
-            })
-        
+                "tsc_number": teacher.tsc_number,
+                "class_id": teacher.class_id
+        })
+
+
         return profile_data, 200
 
 
