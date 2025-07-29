@@ -196,5 +196,5 @@ api.add_resource(
 api.add_resource(SchoolDetails, '/api/schools/<int:school_id>/details', endpoint='school_details')
 api.add_resource(ClassResources, "/api/classes/<int:class_id>/resources")
 api.add_resource(ClassAssessments, "/api/classes/<int:class_id>/assessments")
-api.add_resource(AssessmentSubmissions, '/api/assessments/<int:assessment_id>/submissions', endpoint='assessment_submissions')
+api.add_resource(AssessmentSubmissions, "/api/classes/<int:class_id>/assessments/<int:assessment_id>/submissions")
 api.add_resource(SubmissionByID, '/api/submissions/<int:id>', endpoint='submission_detail')
