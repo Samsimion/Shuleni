@@ -23,7 +23,7 @@ import StudentAssessments from './pages/StudentAssessments';
 import StudentAttendance from './pages/StudentAttendance';
 import StudentGrades from './pages/StudentGrades';
 import ClassManagement from './components/classes/ClassManagement';
-import Attendances from './pages/Attendance';
+import AttendancePage from './pages/EducatorAttendance';
 
 
 export const AppRoutes = () => {
@@ -148,6 +148,20 @@ export const AppRoutes = () => {
         }
       />
 
+      import AttendancePage from './pages/Educator/AttendancePage';
+
+...
+        <Route
+  path="/educator-dashboard/attendance"
+  element={
+    <ProtectedRoute allowedRoles={['educator']}>
+      <AttendancePage />
+    </ProtectedRoute>
+  }
+/>
+
+
+
       {/* 🔐 Student-only routes */}
       <Route
         path="/student-dashboard"
@@ -188,6 +202,15 @@ export const AppRoutes = () => {
             <StudentGrades />
           </ProtectedRoute>
         }
+      />
+
+      <Route
+      path="/student/assessments/:assessmentId/attempt"
+      element={
+      <ProtectedRoute allowedRoles={['student']}>
+        <AttemptAssessmentPage />
+      </ProtectedRoute>
+      }
       />
 
 
