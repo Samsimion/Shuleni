@@ -19,12 +19,16 @@ import EducatorDashboard from './components/dashboards/EducatorDashboard';
 import ClassSection from './pages/ClassSection';
 import useAuth from './hooks/useAuth';
 import StudentClasses from './pages/StudentClasses';
+import EducatorClassManagement from './components/classes/EducatorClassManagement';
 import StudentAssessments from './pages/StudentAssessments';
 import StudentAttendance from './pages/StudentAttendance';
 import StudentGrades from './pages/StudentGrades';
 import ClassManagement from './components/classes/ClassManagement';
 import AttendancePage from './pages/EducatorAttendance';
 import AttemptAssessmentPage from './pages/AttemptAssessmentPage';
+import Attendances from './pages/Attendance';
+import ChatPageWrapper from './pages/ChatPageWrapper';
+
 
 
 export const AppRoutes = () => {
@@ -39,7 +43,7 @@ export const AppRoutes = () => {
 
   return (
     <Routes>
-      {/* 🔁 Default route */}
+  
       <Route
         path="/"
         element={
@@ -47,12 +51,13 @@ export const AppRoutes = () => {
         }
       />
 
-      {/* 🌐 Public Pages */}
       <Route element={<PublicLayout />}>
         
         <Route path="/login" element={<Login />} />
         <Route path="/school-owner-registration" element={<SchoolOwnerRegistration />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
+        <Route path="/student-dashboard" element={<StudentDashboard />} />
+
 
         {/* <Route path="/user-profile" element={<UserProfilePage/>}/> */}
       
@@ -71,9 +76,16 @@ export const AppRoutes = () => {
         }
       />
 
+       <Route path="/educator-dashboard/class" element={
+        <ProtectedRoute allowedRoles={['educator']}>
+          <EducatorClassManagement />
+        </ProtectedRoute>    
+        }
+      />
+
       
 
-      {/* 🔐 Owner-only routes */}
+      {/* Owner-only routes */}
       
       <Route
         path="/owner-dashboard"
@@ -133,7 +145,7 @@ export const AppRoutes = () => {
 
 
 
-      {/* 🔐 Educator-only routes */}
+      {/* Educator-only routes */}
       <Route
         path="/educator-dashboard"
         element={
@@ -157,7 +169,7 @@ export const AppRoutes = () => {
 
 
 
-      {/* 🔐 Student-only routes */}
+      {/* Student-only routes */}
       <Route
         path="/student-dashboard"
         element={
@@ -210,7 +222,7 @@ export const AppRoutes = () => {
 
 
 
-      {/* 🔐 Shared routes: owner, educator, student */}
+      {/* Shared routes: owner, educator, student */}
       <Route
         path="/change-password"
         element={
@@ -228,6 +240,16 @@ export const AppRoutes = () => {
        
       } 
        />
+
+       <Route
+          path="/educator/class/:classId/chat"
+          element={
+            <ProtectedRoute allowedRoles={['student', 'educator']}>
+              <ChatPageWrapper />
+            </ProtectedRoute>
+          }
+        />
+
 
       <Route
         path="/user-profile"
