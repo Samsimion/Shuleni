@@ -28,6 +28,8 @@ flask = "*"
 flask-bcrypt = "*"
 sqlalchemy-serializer = "*"
 flask-restful = "*"
+flask-socketio = "*"
+humanize = "*"
 
 [dev-packages]
 
