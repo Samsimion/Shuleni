@@ -24,6 +24,7 @@ import StudentAttendance from './pages/StudentAttendance';
 import StudentGrades from './pages/StudentGrades';
 import ClassManagement from './components/classes/ClassManagement';
 import AttendancePage from './pages/EducatorAttendance';
+import AttemptAssessmentPage from './pages/AttemptAssessmentPage';
 
 
 export const AppRoutes = () => {
@@ -48,7 +49,7 @@ export const AppRoutes = () => {
 
       {/* 🌐 Public Pages */}
       <Route element={<PublicLayout />}>
-        <Route path="/attendances" element={<Attendances />} />
+        
         <Route path="/login" element={<Login />} />
         <Route path="/school-owner-registration" element={<SchoolOwnerRegistration />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
@@ -70,13 +71,7 @@ export const AppRoutes = () => {
         }
       />
 
-      <Route path="/attendances" element={
-        <ProtectedRoute>
-          <Attendances />
-        </ProtectedRoute>
-        
-      } 
-      />
+      
 
       {/* 🔐 Owner-only routes */}
       
