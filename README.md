@@ -165,4 +165,3 @@ MIT © [Samuel S. Simon](https://github.com/Samsimion)
 ##  Live App
 
  **[Visit Live Site](https://shuleni-zt8u.onrender.com)**
-
