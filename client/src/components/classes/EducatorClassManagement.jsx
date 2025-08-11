@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import api from '../../api/axios';
 import { FaUserGraduate, FaChalkboardTeacher, FaPlusCircle, FaTrash, FaUsers, FaCheck, FaTimes, FaFileUpload, FaClipboardList, FaDownload } from "react-icons/fa";
-import Sidebar from '../common/Sidebar';
+import EducatorSidebar from "../common/EducatorSidebar";
+
+
 
 const EducatorClassManagement = () => {
-  const { schoolIdss, classIdsss } = useParams();
+  
   const [schoolId , setSchoolId]= useState(null)
   const navigate = useNavigate();
   const [classId , setClassId]= useState([])
@@ -16,7 +18,6 @@ const EducatorClassManagement = () => {
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState('');
   const [selectedStudents, setSelectedStudents] = useState(new Set());
-  const [selectedTeachers, setSelectedTeachers] = useState(new Set());
   const [resourceTitle, setResourceTitle] = useState('');
   const [resourceFile, setResourceFile] = useState(null);
   const [assessmentTitle, setAssessmentTitle] = useState('');
@@ -48,7 +49,6 @@ const EducatorClassManagement = () => {
 
 useEffect(() => {
   console.log("schoob:", schoolId)
-  // only run when schoolId is set
   if (schoolId) {
     fetchClassData();
   }
@@ -66,19 +66,18 @@ useEffect(() => {
   const fetchClassData = async () => {
     setLoading(true);
     try {
-      // Get school details (for unassigned users)
       const schoolRes = await api.get(`/schools/${schoolId}/details`);
       setSchoolData(schoolRes.data);
 
-      // Find current class
+      
       const currentClass = schoolRes.data.classes.find(c => c.id === parseInt(classId));
       setClassData(currentClass);
 
-      // Fetch resources for this class
+      
       const resRes = await api.get(`/classes/${classId}/resources`);
       setResources(resRes.data.resources || []);
 
-      // Fetch assessments for this class
+      
       const assRes = await api.get(`/classes/${classId}/assessments`);
       setAssessments(assRes.data.assessments || []);
 
@@ -90,7 +89,7 @@ useEffect(() => {
     }
   };
 
-  // Assign users to class
+  
   const handleAssignUsers = async (userIds, role) => {
     if (!classData || userIds.length === 0) return;
     try {
@@ -100,14 +99,13 @@ useEffect(() => {
       });
       setSuccessMessage(`Assigned ${userIds.size} ${role}s`);
       setSelectedStudents(new Set());
-      setSelectedTeachers(new Set());
       await fetchClassData();
     } catch (err) {
       setError(err.message || 'Failed to assign users');
     }
   };
 
-  // Remove user from class
+  
   const handleRemoveUser = async (userId) => {
     try {
       await api.delete(`/schools/${schoolId}/classes/${classId}/assignments`, {
@@ -120,7 +118,7 @@ useEffect(() => {
     }
   };
 
-  // Add resource to class
+  
   const handleAddResource = async (e) => {
     e.preventDefault();
     if (!resourceTitle || !resourceFile) {
@@ -144,7 +142,7 @@ useEffect(() => {
     }
   };
 
-  // Add assessment to class
+  
   const handleAddAssessment = async (e) => {
     e.preventDefault();
     if (!assessmentTitle || !assessmentQuestions) {
@@ -167,17 +165,13 @@ useEffect(() => {
     }
   };
 
-  // Selection helpers
+  
   const toggleStudentSelection = (studentId) => {
     const newSelected = new Set(selectedStudents);
     newSelected.has(studentId) ? newSelected.delete(studentId) : newSelected.add(studentId);
     setSelectedStudents(newSelected);
   };
-  const toggleTeacherSelection = (teacherId) => {
-    const newSelected = new Set(selectedTeachers);
-    newSelected.has(teacherId) ? newSelected.delete(teacherId) : newSelected.add(teacherId);
-    setSelectedTeachers(newSelected);
-  };
+
 
   if (loading) {
     return (
@@ -203,6 +197,7 @@ useEffect(() => {
           pointerEvents: "none",
         }}
       />
+      <EducatorSidebar/>
 
       
 
@@ -222,8 +217,15 @@ useEffect(() => {
               onClick={() => navigate(`/school/${schoolId}/details`)}
               className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors"
             >
-              Back to School
+              Back to Class
             </button>
+            <button 
+              onClick={() => navigate(`/educator/class/${classId}/chat`)}
+              className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors ml-4"
+            >
+              Open Class Chat
+            </button>
+
           </header>
 
           {/* Success/Error Messages */}
@@ -380,13 +382,12 @@ useEffect(() => {
                 <option value="exam">Exam</option>
                 <option value="cats">CATS</option>
               </select>
-              <input
-                type="text"
-                placeholder="Questions (JSON or text)"
-                value={assessmentQuestions}
-                onChange={e => setAssessmentQuestions(e.target.value)}
-                className="border border-gray-300 rounded-md px-3 py-2"
-                required
+              <textarea
+              rows={6}
+              className="border border-gray-300 rounded px-3 py-2 w-full"
+              value={assessmentQuestions}
+              onChange={e => setAssessmentQuestions(e.target.value)}
+              placeholder="Type each question on a new line..."
               />
               <button type="submit" className="bg-pink-600 text-white px-4 py-2 rounded hover:bg-pink-700">
                 Add
@@ -397,6 +398,9 @@ useEffect(() => {
                 <li key={a.id} className="flex justify-between items-center py-2 border-b">
                   <span>{a.title} ({a.type})</span>
                   <span className="text-xs text-gray-500">{a.created_at ? new Date(a.created_at).toLocaleString() : ''}</span>
+                  <a href={`/classes/${classId}/assessments/${a.id}/submissions`} className="text-blue-600 hover:underline">
+                    <FaUsers className="inline mr-1" /> View Submissions
+                  </a>
                 </li>
               ))}
             </ul>
@@ -410,7 +414,7 @@ useEffect(() => {
             </h3>
             <button
               onClick={() => {
-                // Simple CSV export
+                
                 const headers = ['Full Name', 'Admission/TSC', 'Role'];
                 const rows = [
                   ...(classData?.students || []).map(s => [s.full_name, s.admission_number, 'Student']),

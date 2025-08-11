@@ -26,6 +26,11 @@ import StudentGrades from './pages/StudentGrades';
 import ClassManagement from './components/classes/ClassManagement';
 import AttendancePage from './pages/EducatorAttendance';
 import AttemptAssessmentPage from './pages/AttemptAssessmentPage';
+import StudentResources from './pages/StudentResources';
+
+
+import ChatPageWrapper from './pages/ChatPageWrapper';
+import ClassAssessmentSubmissions from './pages/ClassAssessmentSubmissions';
 
 
 
@@ -50,15 +55,12 @@ export const AppRoutes = () => {
       />
 
       <Route element={<PublicLayout />}>
-        <Route path="/attendances" element={<Attendances />} />
+        {/*<Route path="/attendances" element={<Attendances />} />*/}
         <Route path="/login" element={<Login />} />
         <Route path="/school-owner-registration" element={<SchoolOwnerRegistration />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="/student-dashboard" element={<StudentDashboard />} />
         
-        
-
-        {/* <Route path="/user-profile" element={<UserProfilePage/>}/> */}
       </Route>
       {/*mwalimu routes*/}
       <Route path="/educator-dashboard" element={
@@ -68,12 +70,31 @@ export const AppRoutes = () => {
         }
       />
 
-      <Route path="/attendances" element={
-        <ProtectedRoute>
-          <Attendances />
-        </ProtectedRoute>
-        
-      } 
+      <Route path="/educator-dashboard/attendance" element={
+        <ProtectedRoute allowedRoles={['educator']}>
+          <AttendancePage />
+        </ProtectedRoute>    
+        }
+      />
+
+      
+
+       <Route path="/educator-dashboard/class" element={
+        <ProtectedRoute allowedRoles={['educator']}>
+          <EducatorClassManagement />
+        </ProtectedRoute>    
+        }
+      />
+
+      
+
+      <Route
+        path="/classes/:classId/assessments/:assessmentId/submissions"
+        element={
+          <ProtectedRoute allowedRoles={['educator']}>
+            <ClassAssessmentSubmissions />
+          </ProtectedRoute>
+        }
       />
 
       {/* Owner-only routes */}
@@ -133,18 +154,9 @@ export const AppRoutes = () => {
           </ProtectedRoute>
         }
       />
+      
 
 
-
-      {/* Educator-only routes */}
-      <Route
-        path="/educator-dashboard"
-        element={
-          <ProtectedRoute allowedRoles={['educator']}>
-            <EducatorDashboard />
-          </ProtectedRoute>
-        }
-      />
 
       {/* Student-only routes */}
       <Route
@@ -197,6 +209,23 @@ export const AppRoutes = () => {
       }
       />
 
+      <Route
+        path="/student/classes/:classId/resources"
+        element={
+          <ProtectedRoute allowedRoles={['student']}>
+            <StudentResources />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/educator/class/${c.id}/chat"
+        element={
+          <ProtectedRoute allowedRoles={['student', 'educator']}>
+            <ChatPageWrapper />
+          </ProtectedRoute>
+        }
+      />
+
 
 
       {/* Shared routes: owner, educator, student */}
@@ -217,6 +246,16 @@ export const AppRoutes = () => {
        
       } 
        />
+
+       <Route
+          path="/educator/class/:classId/chat"
+          element={
+            <ProtectedRoute allowedRoles={['student', 'educator']}>
+              <ChatPageWrapper />
+            </ProtectedRoute>
+          }
+        />
+
 
       <Route
         path="/user-profile"

@@ -1,5 +1,5 @@
 
-from flask import Flask, make_response
+from flask import Flask, make_response, send_from_directory,jsonify,request, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api, Resource
 from flask_migrate import Migrate
@@ -15,9 +15,14 @@ from datetime import timedelta
 from flask_jwt_extended import jwt_required
 from extensions import db, ma, jwt, bcrypt, cors
 
-app = Flask(__name__)
+app = Flask(__name__,
+    static_url_path='',
+    static_folder='../client/dist',
+    template_folder='../client/dist'
+            )
 app.config.from_object(Config)
 socketio = SocketIO(app, cors_allowed_origins="*")
+
 
 
 db.init_app(app)
@@ -38,10 +43,9 @@ from routes.owner_dashboard import OwnerDashboard
 from routes.school_management import SchoolDetails, AssignUserToClass
 
 from routes.attendance_route import AttendanceById, Attendances
-from routes.clas_routes import ClassList,ClassById, ClassResources, ClassAssessments
+from routes.clas_routes import ClassList,ClassById, ClassResources, ClassAssessments, AssessmentSubmissions, SubmissionByID
 from routes.educator_dashboard import EducatorDashboard
 from routes.chat import ChatListResource, ChatResource, ChatExportResource
-# Register real-time chat socket handlers
 from routes import chat_socket
 from routes.assessment_routes import AssessmentById
 from models import *
@@ -147,6 +151,16 @@ class ValidatedChangePassword(ChangePassword):
 class Home(Resource):
     def get(self):
         return make_response({"status": "healthy", "message": "Shuleni API is running"}, 200)
+    
+@app.route('/uploads/<path:filename>')
+def uploaded_file(filename):
+    return send_from_directory('uploads', filename)
+
+@app.errorhandler(404)
+def not_found(e):
+    if request.path.startswith('/api'):
+        return jsonify({'error': 'Not found'}), 404
+    return render_template("index.html")
 
 
 api.add_resource(Home, '/api/home', endpoint='home')
@@ -179,6 +193,8 @@ api.add_resource(ClassAssessments, "/api/classes/<int:class_id>/assessments", en
 api.add_resource(AssessmentById, "/api/assessments/<int:id>", endpoint="assessment_by_id")
 print(" EducatorDashboard route is being registered")
 api.add_resource(EducatorDashboard, '/api/educator/dashboard')
+api.add_resource(AssessmentSubmissions, "/api/classes/<int:class_id>/assessments/<int:assessment_id>/submissions")
+api.add_resource(SubmissionByID, "/api/submissions/<int:id>")
 
 
 api.add_resource(ChatListResource, "/api/chats", endpoint="chatlistresource")
