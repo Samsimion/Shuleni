@@ -109,10 +109,11 @@ const ClassManagement = () => {
       await fetchClassData();
     } catch (err) {
       setError(err.message || 'Failed to upload resource');
+      alert(err.message)
     }
   };
 
-  
+ 
   const handleAddAssessment = async (e) => {
     e.preventDefault();
     if (!assessmentTitle || !assessmentQuestions) {
@@ -132,6 +133,7 @@ const ClassManagement = () => {
       await fetchClassData();
     } catch (err) {
       setError(err.message || 'Failed to create assessment');
+      alert(err.message)
     }
   };
 

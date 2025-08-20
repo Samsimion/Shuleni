@@ -7,6 +7,18 @@ from datetime import datetime, timezone
 import json
 
 
+def owner_auth(func):
+    def wrapper():
+        current_user = json.loads(get_jwt_identity())
+        
+        if current_user['role'] != 'owner':
+            return {"error": "Unauthorized"}, 403
+        else:
+            return func()
+        
+    return wrapper
+
+
 class SchoolDetails(Resource):
     @jwt_required()
     def get(self, school_id):
@@ -132,12 +144,13 @@ class SchoolDetails(Resource):
 
 class ClassManagement(Resource):
     @jwt_required()
+    @owner_auth
     def post(self, school_id):
         """Create a new class"""
         current_user = json.loads(get_jwt_identity())
         
-        if current_user['role'] != 'owner':
-            return {"error": "Unauthorized"}, 403
+        # if current_user['role'] != 'owner':
+        #     return {"error": "Unauthorized"}, 403
             
         try:
             

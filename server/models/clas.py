@@ -9,8 +9,6 @@ from .user import User
 from sqlalchemy.orm import foreign
 
 
-
-
 class Class(db.Model, SerializerMixin):
     __tablename__ = 'classes'
 

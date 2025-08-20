@@ -237,18 +237,36 @@ class ClassById(Resource):
     
 api.add_resource(ClassById, "/classes/<int:id>")
 
+
+
+def require_educator_auth(func):
+    def wrapper(*args, **kwargs):
+        current_user = json.loads(get_jwt_identity())
+        user = User.query.get(current_user['id'])
+        if not user or user.role not in ['educator']:
+            return {"error": "Unauthorized only educator can perfom this action!"}, 403
+        
+        else:
+            return func(*args, **kwargs)
+    
+    return wrapper
+
+
+
 class ClassResources(Resource):
     @jwt_required()
     def get(self, class_id):
         resources = Resources.query.filter_by(class_id=class_id).all()
         return make_response({"resources": resources_schema.dump(resources)}, 200)
 
+    
     @jwt_required()
+    @require_educator_auth
     def post(self, class_id):
         current_user = json.loads(get_jwt_identity())
         user = User.query.get(current_user['id'])
-        if not user or user.role not in ['owner', 'educator']:
-            return {"error": "Unauthorized"}, 403
+        # if not user or user.role not in ['owner', 'educator']:
+        #     return {"error": "Unauthorized"}, 403
 
         title = request.form.get('title')
         file = request.files.get('file')
@@ -284,11 +302,12 @@ class ClassAssessments(Resource):
         return make_response({"assessments": assessments_schema.dump(assessments)}, 200)
 
     @jwt_required()
+    @require_educator_auth
     def post(self, class_id):
         current_user = json.loads(get_jwt_identity())
         user = User.query.get(current_user['id'])
-        if not user or user.role not in ['owner', 'educator']:
-            return {"error": "Unauthorized"}, 403
+        # if not user or user.role not in ['owner', 'educator']:
+        #     return {"error": "Unauthorized, Only educator can mark attendance"}, 403
 
         data = request.get_json()
         title = data.get('title')
