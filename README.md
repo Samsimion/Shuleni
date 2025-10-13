@@ -37,9 +37,9 @@ Together, these technologies and design patterns provide a secure, maintainable,
 
 
 #LOGIN Credentials
-1. ## TEACHERS logins credentials - EMAIL=samuelsimion1990@gmail.com   password=123456
+1. ## SCHOOLOWNER logins credentials - EMAIL=samuelsimion1990@gmail.com   password=123456
 2. ## STUDENT logins credentials - admno= 5555    password=123456
-3. ## SCHOOLOWNER credentials - will@gmail.com   password=abcd
+3. ## TEACHER credentials - will@gmail.com   password=abcdef
 
 
 
